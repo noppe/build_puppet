@@ -1,0 +1,56 @@
+#!/bin/sh
+
+src=$1
+prefix=$2
+
+case $src in 
+  *ruby-1.8.7-p371)
+    CONFIGURE="./configure --prefix=${prefix}
+  *ruby*) 
+    CPPFLAGS="-I$prefix/include"
+    export CPPFLAGS
+    LIBS="-lssl -lz -lcrypto"
+    export LIBS
+    CFLAGS="-m64"
+    export CFLAGS
+    LDFLAGS="-Wl,-rpath,$prefix/lib "
+    export LDFLAGS
+    CONFIGURE="./configure --with-openssl-dir=/home/noppe/work/build/lib --enable-pthread --prefix=$prefix"
+    export CONFIGURE
+#    /bin/bash
+    break
+  ;;
+  *openssl*)
+    CFLAGS="-fPIC -m64"
+    export CFLAGS
+    if [ "`uname -i`" = "i86pc" ] ; then
+      CONFIGURE="./Configure solaris64-x86_64-gcc shared zlib-dynamic --with-zlib-include=/home/noppe/work/build/include --with-zlib-lib=/home/noppe/work/build/lib --prefix=/home/noppe/work/build --openssldir=/home/noppe/work/build"
+      #      CONFIGURE="./Configure solaris64-x86_64-gcc --prefix=$prefix"
+    else
+      CONFIGURE="perl Configure solaris-sparcv9-gcc --prefix=$prefix"
+    fi
+    break
+  ;;
+  *zlib*)
+#    CFLAGS="-m64 -fPIC -shared"
+#    export CFLAGS
+#    LD_ALTEXEC=/usr/gnu/i386-pc-solaris2.11/bin/ld
+#    export LD_ALTEXEC
+    CONFIGURE="./configure --prefix=$prefix"
+    break 
+  ;;
+  *)
+    echo "Dont know how to build $1"
+    exit 1
+  ;;
+esac
+
+PATH=/usr/sfw/bin:/usr/ccs/bin:$PATH
+export PATH
+MAKE=gmake
+
+cd $src
+$CONFIGURE
+$MAKE 
+$MAKE test
+$MAKE install
