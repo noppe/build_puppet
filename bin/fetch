@@ -1,0 +1,18 @@
+#!/bin/sh
+
+while read pack ; do
+  read url
+  test -f tgzs/${pack} || wget -O tgzs/${pack} ${url}/${pack}
+done < files/packlist
+facter-1.7.1.tar.gz
+http://downloads.puppetlabs.com/facter
+puppet-3.2.2.tar.gz
+http://downloads.puppetlabs.com/puppet
+ruby-1.8.7-p358.tar.gz
+ftp://ftp.ruby-lang.org/pub/ruby
+openssl-0.9.8w.tar.gz
+http://www.openssl.org/source
+zlib-1.2.8.tar.gz
+http://dfn.dl.sourceforge.net/project/libpng/zlib/1.2.8
+EOF
+

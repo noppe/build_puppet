@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Unpack (and pacth?) the src
+
+cat files/packlist | while read a ; do
+  gunzip -c tgzs/$a | (cd src ; tar xvf -)
+  read b
+done 
+

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+prefix=/home/qnilpau/workarea/build_puppet/10_sparc
+
+PATH=/opt/SELIW/Sun/sunstudio12.1/bin:$PATH
+export PATH
+CFLAGS='-m32'
+export CFLAGS
+cd src/ruby-1.8.7-p358
+./configure --prefix=${prefix} --without-gcc
+make 
+make install
+
