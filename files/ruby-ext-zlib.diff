@@ -1,0 +1,11 @@
+--- extconf.rb.orig	Thu May 29 13:23:36 2008
++++ extconf.rb	Thu Jun 20 18:01:42 2013
+@@ -10,7 +10,7 @@
+ dir_config 'zlib'
+ 
+ 
+-if %w'z libz zlib1 zlib zdll'.find {|z| have_library(z, 'deflateReset')} and
++if %w'eiz'.find {|z| have_library(z, 'deflateReset')} and
+     have_header('zlib.h') then
+ 
+   defines = []

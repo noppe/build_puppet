@@ -52,6 +52,15 @@ popd
 popd
 # ===
 
+# ruby-shadow
+pushd src/ruby-shadow
+$prefix/bin/ruby extconf.rb
+gmake
+gmake install
+popd
+# ===
+
+
 # facter
 pushd src/facter-1.7.1
 $prefix/bin/ruby install.rb
