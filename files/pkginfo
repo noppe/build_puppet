@@ -1,0 +1,11 @@
+PKG="EIScm"
+NAME="eiscm"
+ARCH="i386"
+VERSION="0.3.1"
+CATEGORY="application"
+VENDOR="EIS Global Team"
+EMAIL="nils.olof.xo.paulsson@ericsson.com"
+PSTAMP="Nils Olof Paulsson"
+BASEDIR="/opt/eis_cm" 
+CLASSES="none"
+
