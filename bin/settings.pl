@@ -70,15 +70,18 @@ $puppet322 = {
 # @packages = ( $rubyshadow214 ) ;
 # @packages = ( $facter171, $puppet322 ) ;
 
-# @packages = ( $zlib128,
-# 	      $openssl098w,
-# 	      $ruby187p358,
-# 	      $rubyshadow214,
-# 	      $facter171,
-# 	      $puppet322,
-#     ) ;
-# 
-chop ($arch = `uname -p`) ;
+if (0) {
+@packages = ( $zlib128,
+	      $openssl098w,
+	      $ruby187p358,
+	      $rubyshadow214,
+	      $facter171,
+	      $puppet322,
+    ) ;
+} else {
+    @packages = () ;
+}
+
 $target = $top . "/packages/eisuppet-solaris-0.3.1.pkg" ;
 # print $target, "debug\n" ;
 @pkginfo = (
@@ -93,3 +96,57 @@ $target = $top . "/packages/eisuppet-solaris-0.3.1.pkg" ;
     'BASEDIR="/opt/puppet"',
     'CLASSES="none"',
     );
+
+$postinstall = <<EOT;
+#!/bin/sh
+
+test -f /usr/bin/puppet || ln -s /opt/puppet/bin/puppet /usr/bin
+test -f /usr/bin/facter || ln -s /opt/puppet/bin/facter /usr/bin
+if [ ! -d /etc/puppet ] ; then
+  mkdir -p /etc/puppet
+  cat > /etc/puppet/puppet.conf <<EOF
+# This is a template file for puppet
+# EDIT at least all lines with server names
+
+[main]
+    # The Puppet log directory.
+    # The default value is '$vardir/log'.
+    logdir = /var/log/puppet
+
+    # Where Puppet PID files are kept.
+    # The default value is '$vardir/run'.
+    rundir = /var/run/puppet
+
+    # Where SSL certificates are kept.
+    # The default value is '$confdir/ssl'.
+    ssldir = $vardir/ssl
+
+    archive_files = true
+    archive_file_server = puppet.rnd.ericsson.se
+
+[agent]
+    # The file in which puppetd stores a list of the classes
+    # associated with the retrieved configuratiion.  Can be loaded in
+    # the separate ``puppet`` executable using the ``--loadclasses``
+    # option.
+    # The default value is '$confdir/classes.txt'.
+    classfile = $vardir/classes.txt
+
+    # Where puppetd caches the local configuration.  An
+    # extension indicating the cache format is added automatically.
+    # The default value is '$confdir/localconfig'.
+    localconfig = $vardir/localconfig
+
+    certname = puppet.rnd.ericsson.se
+    server = puppet.rnd.ericsson.se
+    ca_server = puppetca.rnd.ericsson.se
+    report = true
+    graph = true
+    pluginsync = true
+
+EOF
+
+fi
+test -f /etc/puppet/NO-POSTINSTALL-RUN || /opt/puppet/bin/puppet -t
+EOT
+

@@ -1,14 +1,17 @@
 #!/usr/bin/env perl
 
-use lib './bin' ;
 use Cwd qw/getcwd chdir/ ;
 
 chop ($hostname = `uname -n`) ;
+chop ($arch = `uname -p`) ;
 $src = 'src.' . $hostname ;
-$top = getcwd ;
-$prefix = '/opt/puppetz' ;
+$top = getcwd ; 
+$prefix = '/opt/puppet' ;
 
-require 'settings.pl' ;
+
+
+
+require "$top/bin/settings.pl" ;
 
 sub packup {
     my $p = shift ;
@@ -43,14 +46,28 @@ sub build {
 
 sub packit {
 
+    # cleanup old files
+    foreach (qw/prototype pkginfo postinstall/) {
+	unlink "${prefix}/$_" ;
+    }
+    
     my @proto = `cd ${prefix} ; find . -print | pkgproto` ;
 
-    chop (my $name = `id -n -u`) ;
-    chop (my $group = `id -n -g`) ;
+    #chop (my $name = `id -n -u`) ;
+    #chop (my $group = `id -n -g`) ;
+    my $id = `id -a` ;
+    (my $name, $group) = ($id =~ m/\((\w+?)\).*?\((\w+)\)/) ;
 
     print $name, " ",  $group, "\n" ;
 
     grep ( { s/$name/bin/g ; s/$group/bin/g } @proto ) ;
+
+    if ($postinstall) {
+	unshift @proto, "i postinstall=./postinstall\n" ;
+	open PI, "> ${prefix}/postinstall" ;
+	print PI $postinstall ;
+        close PI ;
+    }
     unshift @proto, "i pkginfo=./pkginfo\n" ;
     open PROTO, "> ${prefix}/prototype" ;
     print PROTO @proto ;
@@ -64,7 +81,7 @@ sub packit {
     system "cd /var/spool/pkg ; pkgtrans -s /var/spool/pkg ${target} EISpuppet" ;
 }
 
-mkdir $src unless -d $src ;
+mkdir $src, 0755 unless -d $src ;
 foreach (@packages) {
     print $_->{'name'}, "\n" ;
     packup ($_) unless -d $_->{'srcdir'} ;
