@@ -1,14 +1,14 @@
 #!/usr/bin/env perl
 
-use lib './bin' ;
 use Cwd qw/getcwd chdir/ ;
+use Getopt::Long ;
 
 chop ($hostname = `uname -n`) ;
 $src = 'src.' . $hostname ;
 $top = getcwd ;
-$prefix = '/opt/puppetz' ;
+$prefix = '/opt/puppet' ;
 
-require 'settings.pl' ;
+require "$top/bin/settings.pl" ;
 
 sub packup {
     my $p = shift ;
@@ -64,6 +64,17 @@ sub packit {
     system "cd /var/spool/pkg ; pkgtrans -s /var/spool/pkg ${target} EISpuppet" ;
 }
 
+sub debit {
+    
+    mkdir "${prefix}/DEBIAN" unless -d "${prefix}/DEBIAN" ;
+    open CTRL, "> ${prefix}/DEBIAN/control" ;
+    print CTRL join ("\n", @debinfo), "\n" ;
+    close CTRL ;
+}
+
+
+# --- 
+
 mkdir $src unless -d $src ;
 foreach (@packages) {
     print $_->{'name'}, "\n" ;
@@ -72,4 +83,5 @@ foreach (@packages) {
     build ($_) ;
     chdir $top ;
 }
-packit () ;
+# packit () ;
+debit () ;

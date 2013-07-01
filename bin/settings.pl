@@ -15,7 +15,7 @@ $openssl098w = {
     'pkgsrc' => $top . '/tgzs/openssl-0.9.8w.tar.gz',
     'srcdir' => $top . '/' . $src . '/openssl-0.9.8w',
     'packup' => 'gunzip -c  %PKGSRC% | tar xvf -',
-    'configure' => "./Configure  -L${prefix}/lib -I${prefix}include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
+    'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
     'make' => 'make',
     'install' => 'make install',
     'env' => { 'LDFLAGS', '-static-libgcc' },
@@ -63,6 +63,17 @@ $puppet322 = {
 
 } ;
 
+# === ubuntu 12.04 LTS
+
+$openssl098w = { 
+    %{$openssl098w},
+    'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} linux-x86_64 -static-libgcc",
+} ;
+		 
+$ruby187p358 = {
+    %{$ruby187p358},
+    'configure' => "./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -Wl,-rpath,${prefix}/lib \' CPPFLAGS=-I${prefix}/include",
+} ;
 
 # @packages = ( $zlib128 ) ;
 # @packages = ( $openssl098w ) ;
@@ -70,14 +81,14 @@ $puppet322 = {
 # @packages = ( $rubyshadow214 ) ;
 # @packages = ( $facter171, $puppet322 ) ;
 
-# @packages = ( $zlib128,
-# 	      $openssl098w,
-# 	      $ruby187p358,
-# 	      $rubyshadow214,
-# 	      $facter171,
-# 	      $puppet322,
-#     ) ;
-# 
+@packages = ( $zlib128,
+ 	      $openssl098w,
+ 	      $ruby187p358,
+ 	      $rubyshadow214,
+ 	      $facter171,
+	      $puppet322,
+     ) ;
+ 
 chop ($arch = `uname -p`) ;
 $target = $top . "/packages/eisuppet-solaris-0.3.1.pkg" ;
 # print $target, "debug\n" ;
@@ -93,3 +104,13 @@ $target = $top . "/packages/eisuppet-solaris-0.3.1.pkg" ;
     'BASEDIR="/opt/puppet"',
     'CLASSES="none"',
     );
+@debinfo = (
+    'Package: eis-puppet',
+    'Version: 0.3.1',
+    'Architecture: ' . ($arch == "x86_64" ? "amd64" : $arch),
+    'Priority: optional',
+    'Section: base',
+    'Depends:',
+    'Maintainer: nils.olof.xo.paulsson@ericsson.com',
+    'Description: This is EIS CM puppet',
+    ) ;
