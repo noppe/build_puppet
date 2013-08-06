@@ -9,6 +9,7 @@
 
 $zlib128 = {
     'name'      => 'zlib 1.2.8',
+    'fetch'     => 'wget http://dfn.dl.sourceforge.net/project/libpng/zlib/1.2.8/zlib-1.2.8.tar.gz',
     'pkgsrc'    => $top . '/tgzs/zlib-1.2.8.tar.gz',
     'srcdir'    => $top . '/' . $src . '/zlib-1.2.8',
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -17,12 +18,13 @@ $zlib128 = {
     'install'   => 'make install',
     'env'       => { 
 	'LDFLAGS' => '-static-libgcc',
-	'PATH'    => $pathmap {$platform_os},
+	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
 $openssl098w = {
     'name'      => 'openssl 0.9.8w',
+    'fetch'     => 'wget http://www.openssl.org/source/openssl-0.9.8w.tar.gz',
     'pkgsrc'    => $top . '/tgzs/openssl-0.9.8w.tar.gz',
     'srcdir'    => $top . '/' . $src . '/openssl-0.9.8w',
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -31,12 +33,13 @@ $openssl098w = {
     'install'   => 'make install',
     'env'       => { 
 	'LDFLAGS' => '-static-libgcc',
-	'PATH'    => $pathmap {$platform_os},
+	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
 $ruby187p358 = {
     'name'      => 'ruby-1.8.7',
+    'fetch'     => 'wget ftp://ftp.ruby-lang.org/pub/ruby/ruby-1.8.7-p358.tar.gz',
     'pkgsrc'    => $top . '/tgzs/ruby-1.8.7-p358.tar.gz',
     'srcdir'    => "${top}/${src}/ruby-1.8.7-p358",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -44,7 +47,7 @@ $ruby187p358 = {
     'make'      => 'make',
     'install'   => 'make install',
     'env' => { 
-	'PATH'    => $pathmap {$platform_os},
+	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
 #	'LDFLAGS' => '-static-libgcc', 
 #	'CFLAGS' => "-I${prefix}/include -L${prefix}/lib -R${prefix}/lib" 
     },
@@ -52,6 +55,7 @@ $ruby187p358 = {
 
 $readline62 = {
     'name'      => 'Readline 6.2',
+    'fetch'     => 'wget http://ftp.gnu.org/gnu/readline/readline-6.2.tar.gz',
     'pkgsrc'    => "${top}/tgzs/readline-6.2.tar.gz",
     'srcdir'    => "${top}/${src}/readline-6.2",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -59,13 +63,14 @@ $readline62 = {
     'make'      => 'make',
     'install'   => 'make install',
     'env' => { 
-	'PATH'    => $pathmap {$platform_os},
+	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
 
 $augeas110 = {
     'name'      => 'Augeas 1.1.0',
+    'fetch'     => 'wget http://download.augeas.net/augeas-1.1.0.tar.gz',
     'pkgsrc'    => "${top}/tgzs/augeas-1.1.0.tar.gz",
     'srcdir'    => "${top}/${src}/augeas-1.1.0",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -73,12 +78,13 @@ $augeas110 = {
     'make'      => 'gmake',
     'install'   => 'gmake install',
     'env' => { 
-	'PATH'    => $pathmap {$platform_os},
+	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
 $ruby_augeas050 = {
     'name'      => 'Ruby-augeas 0.5.0',
+    'fetch'     => 'wget http://download.augeas.net/ruby/ruby-augeas-0.5.0.tgz',
     'pkgsrc'    => "${top}/tgzs/ruby-augeas-0.5.0.tgz",
     'srcdir'    => "${top}/${src}/ruby-augeas-0.5.0",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -86,12 +92,13 @@ $ruby_augeas050 = {
     'make'      => 'cd ext/augeas ; gmake CC="gcc -I/usr/include/libxml2" ; cd ../..',
     'install'   => "cp lib/augeas.rb ${prefix}/lib/ruby/site_ruby/1.8 ; cd ext/augeas ; gmake install; ",
     'env' => { 
-	'PATH'    => $pathmap {$platform_os},
+	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
     
 $rubyshadow214 = {
     'name'      => 'ruby-shadow 2.1.4',
+    'fetch'     => 'git clone https://github.com/apalmblad/ruby-shadow.git ; cd ruby_shadow; git checkout 2.1.4',
     'pkgsrc'    => $top . '/tgzs/ruby-shadow.tar.gz',
     'srcdir'    => "${top}/${src}/ruby-shadow",
     'packup'    => "cp -r ${top}/tgzs/ruby-shadow ${top}/${src}/ruby-shadow",
@@ -102,12 +109,13 @@ $rubyshadow214 = {
     'install'   => 'gmake install',
     'env' => { 
 	'CFLAGS' => '-static-libgcc',
-	'PATH'    => $pathmap {$platform_os},
+	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
 $facter171 = {
     'name'    => 'Facter 1.7.1',
+    'fetch'   => 'wget http://downloads.puppetlabs.com/facter/facter-1.7.1.tar.gz', 
     'pkgsrc'  => $top . '/tgzs/facter-1.7.1.tar.gz',
     'srcdir'  => "${top}/${src}/facter-1.7.1",
     'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -115,7 +123,8 @@ $facter171 = {
 } ;
 
 $puppet322 = {
-    'name'    => 'Facter 3.2.2',
+    'name'    => 'Puppet 3.2.2',
+    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.2.2.tar.gz', 
     'pkgsrc'  => $top . '/tgzs/puppet-3.2.2.tar.gz',
     'srcdir'  => "${top}/${src}/puppet-3.2.2",
     'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -123,28 +132,6 @@ $puppet322 = {
 
 } ;
 
-# === ubuntu 12.04 LTS
-if ($platform_os =~ /^Linux/) {
-    $openssl098w = { 
-	%{$openssl098w},
-	'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} linux-x86_64 -static-libgcc",
-    } ;
-		 
-    $ruby187p358 = {
-	%{$ruby187p358},
-	'configure' => "./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -Wl,-rpath,${prefix}/lib \' CPPFLAGS=-I${prefix}/include",
-    } ;
-} ; 
-
-# @packages = qw/zlib128/ ;
-# @packages = qw/openssl098w/ ;
-# @packages = qw/ruby187p358/ ;
-# @packages = qw/rubyshadow214/ ;
-# @packages = qw/ facter171 puppet322 / ;
-# @packages = qw/ readline62 augeas110 / ;
-# @packages = qw/ ruby_augeas050 / ;
-
-if (1) {
 @packages = qw/
     zlib128
     openssl098w
@@ -156,10 +143,9 @@ if (1) {
     facter171
     puppet322
     / ;
-} 
 
 $target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
-# print $target, "debug\n" ;
+
 @pkginfo = (
     'PKG="EISpuppet"',
     'NAME="eispuppet"',

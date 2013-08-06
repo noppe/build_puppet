@@ -11,7 +11,21 @@ chop ($arch = `uname -p`) ;
 $eis_puppet_version = '0.3.3' ;
 my ($os, $rev) = (`uname -s`, `uname -r`) ;
 chomp ($os, $rev) ;
-$platform_os = "$os-$rev" ;
+if ($os eq 'Linux') {
+    my $flavor = `uname -v` ;
+    chomp ($flavor) ;
+    if ($flavor =~ /-(Ubuntu)/) {
+	$platform_os = "$1-$rev" ;
+    } elsif ($flavor =~ /(RHEL)/i) {
+	$platform_os = "$1-$rev" ;
+    } else {
+	$platform_os = "$flavor-$rev" ;
+    }
+} else {
+    $platform_os = "$os-$rev" ;
+}
+
+
 my $arch = `uname -p` ;
 chomp $arch ;
 $platform_arch = $arch ;
@@ -32,7 +46,14 @@ sub packup {
     return if -d $p->{'srcdir'} ;
     chdir $src ;
     ($foo = $p->{'packup'}) =~ s/%([A-Z]+)%/$p->{lc $1}/eg ;
-    system $foo ;
+    open FOO, "-|", $foo || die 'Packup fail' ;
+    while (defined <FOO>) {
+	logprint $_ ;
+    }
+    close FOO ;
+    if ($?) {
+	print "packup returned $?) \n" ;
+    }
     chdir $top ;
 }
 
@@ -48,7 +69,6 @@ sub expand {
 sub build {
     my $p = shift ;
     
-    mkdir "${top}/logs", 0755 unless -d "${top}/logs" ;
     chdir $p->{ 'srcdir' } ;
     
     while (($k, $v) = each %{$p->{ 'env' }}) {
@@ -129,42 +149,60 @@ sub packit {
 }
 
 sub debit {
-    
     mkdir "${prefix}/DEBIAN", 0755 unless -d "${prefix}/DEBIAN" ;
     open CTRL, "> ${prefix}/DEBIAN/control" ;
     print CTRL join ("\n", @debinfo), "\n" ;
     close CTRL ;
 }
 
+sub fetch {
+    my $p = shift ;
+    my $cmd = $p->{'fetch'} ;
+    chdir "${top}/tgzs" ;
+    open FETCH, "-|", $cmd || die "Fetching " . $p->{'name'} . " failed" ;
+    while (defined <FETCH>) {
+	logprint $_ ;
+    }
+    close FETCH ;
+    if ($?) {
+	print "Fetch retval = $? \n" ;
+    }
+    chdir $top ;
+}
 
 # --- 
 
 $dump = 0 ;
+$err = 'ignore' ;
 GetOptions (
-	    'top=s'      => \$top, 
-	    'prefix=s'   => \$prefix,
-	    'packages=s' => \@pac,
-	    'dump'       => \$dump
-	    ) ;
+    'top=s'      => \$top, 
+    'error=s'    => \$err,
+    'prefix=s'   => \$prefix,
+    'packages=s' => \@pac,
+    'dump'       => \$dump
+    ) ;
 
-open LOG, "> $top/logs/build.$hostname-$$" ;
+mkdir "${top}/logs", 0755 unless -d "${top}/logs" ;
+open LOG, ">", "$top/logs/build.$hostname-$$" ;
 
 logprint "settings\n" ;
 require "$top/bin/settings.pl" ;
 if (-f "$top/bin/settings.$platform_os.pl") {
     logprint "$platform_os settings\n" ;
+    print "$platform_os settings\n" ;
     require "$top/bin/settings.$platform_os.pl" ;
 }
 if (-f "$top/bin/settings.$hostname.pl") {
     logprint "$hostname settings\n" ;
+    print "$hostname settings\n" ;
     require "$top/bin/settings.$hostname.pl" ;
 }
 
 
 @packages = split (/,/, join (',', @pac)) if @pac ;
 
-print join (", ", @packages), "\nDUmp=$dump\n" ;
-
+print join (", ", @packages), "\n" ;
+print "Platform_os = ${platform_os}\n" ;
 if ($dump) {
     foreach $name (@packages) {
 	$p = ${$name} ; 
@@ -182,16 +220,25 @@ if ($dump) {
     exit 0 ;
 }
 
+chdir $top ;
+mkdir 'tgzs', 0755 unless -d 'tgzs' ;
+mkdir 'packages', 0755 unless -d 'packages' ;
 mkdir $src, 0755 unless -d $src ;
 foreach $name (@packages) {
     $_ = ${$name} ;
     logprint $_->{'name'}, "\n" ;
+    print $_->{'name'}, "\n" ;
+    fetch ($_) unless -f $_->{'pkgsrc'} ;
     packup ($_) unless -d $_->{'srcdir'} ;
     chdir $_->{'srcdir'} ;
     build ($_) ;
     chdir $top ;
 }
 
-if (1) {
+if ($platform_os =~ /SunOS/) {
     packit () ;
+} elsif ($platorm_os =~ /Ubuntu/) {
+    debit () ;
+} else {
+    rpmit () ;
 }
