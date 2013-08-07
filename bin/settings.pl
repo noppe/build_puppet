@@ -170,6 +170,22 @@ $target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
     'Description: This is EIS CM puppet',
     ) ;
 
+@rpminfo = (
+    'Name: eis-puppet',
+    'Version: ' . $eis_puppet_version,
+    'Release: ' . $eis_puppet_version,
+    'Licence: GPL',
+    'Summary: EIS Puppet standalone package including tools and libs',
+    'Group: Applications/System', 
+    'Buildroot: ' . ${top},
+    '',
+    '%description',
+    'This package includes ' . join (", ", @packages),
+    '',
+    '%files',
+    '/opt/puppet',
+    ) ;
+
 $postinstall = <<EOT;
 #!/bin/sh
 

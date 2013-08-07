@@ -37,7 +37,8 @@ $prefix = '/opt/puppet' ;
 # ---
 
 sub logprint {
-    print LOG @_ ;
+    print LOG1 @_ ;
+    print LOG2 @_ ;
 }
 
 
@@ -82,9 +83,10 @@ sub build {
     open CMD, "$cmd |" ;
     while (<CMD>) {
 	logprint $_ ;
-	print $_ if /fatal|error/i ;
+        print $_ if /fatal|error/i ;
     }
     close CMD ;
+    exit $? if $? ;
 
     logprint "make: " . $p->{'make'}, "\n" ;
     $cmd = expand ($p, 'make') ;
@@ -94,6 +96,7 @@ sub build {
 	print $_ if /fatal|error/i ;
     }
     close CMD ;
+    exit $? if $? ;
     
     logprint "Install: " . $p->{'install'}, "\n" ;
     $cmd = expand ($p, 'install') ;
@@ -103,6 +106,8 @@ sub build {
 	print $_ if /fatal|error/i ;
     }
     close CMD ;
+    exit $? if $? ;
+
     while (($k, $v) = each %remember) {
 	$ENV{$k} = $v ;
     }
@@ -148,6 +153,14 @@ sub packit {
     system "cd /var/spool/pkg ; pkgtrans -s /var/spool/pkg ${target} EISpuppet" ;
 }
 
+sub rpmit {
+    open CTRL, ">", "/tmp/puppet.spec" ;
+    print CTRL join ("\n", @rpminfo), "\n" ;
+    close CTRL ;
+    
+    system "rpmbuild --define \"_rpmdir /tmp\" --buildroot=$top -bb /tmp/puppet.spec" ;
+}
+
 sub debit {
     mkdir "${prefix}/DEBIAN", 0755 unless -d "${prefix}/DEBIAN" ;
     open CTRL, "> ${prefix}/DEBIAN/control" ;
@@ -183,7 +196,8 @@ GetOptions (
     ) ;
 
 mkdir "${top}/logs", 0755 unless -d "${top}/logs" ;
-open LOG, ">", "$top/logs/build.$hostname-$$" ;
+open LOG1, ">", "$top/logs/build.$hostname-$$" ;
+open LOG2, ">", "$top/logs/latest" ;
 
 logprint "settings\n" ;
 require "$top/bin/settings.pl" ;
