@@ -89,7 +89,7 @@ $ruby_augeas050 = {
     'srcdir'    => "${top}/${src}/ruby-augeas-0.5.0",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
     'configure' => "cd ext/augeas ; echo \"require 'mkmf' ; extension_name = '_augeas' ; create_makefile(extension_name)\" > ee2.rb ; ${prefix}/bin/ruby ee2.rb ; cd ../..",
-    'make'      => 'cd ext/augeas ; gmake CC="gcc -I/usr/include/libxml2" ; cd ../..',
+    'make'      => 'cd ext/augeas ; gmake CC="gcc -I/usr/include/libxml2 -laugeas" ; cd ../..',
     'install'   => "cp lib/augeas.rb ${prefix}/lib/ruby/site_ruby/1.8 ; cd ext/augeas ; gmake install; ",
     'env' => { 
 	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
@@ -118,9 +118,19 @@ $facter171 = {
     'fetch'   => 'wget http://downloads.puppetlabs.com/facter/facter-1.7.1.tar.gz', 
     'pkgsrc'  => $top . '/tgzs/facter-1.7.1.tar.gz',
     'srcdir'  => "${top}/${src}/facter-1.7.1",
-    'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
+    'packup'  => 'gunzip -c  %PKGSRC% | tar xf -',
     'install' => "${prefix}/bin/ruby install.rb",
 } ;
+
+$hiera121 = {
+    'name'    => 'Hiera 1.2.1',
+    'fetch'   => 'wget http://downloads.puppetlabs.com/hiera/hiera-1.2.1.tar.gz',
+    'pkgsrc'  => $top . '/tgzs/hiera-1.2.1.tar.gz',
+    'srcdir'  => "${top}/${src}/hiera-1.2.1",
+    'packup'  => 'gunzip -c %PKGSRC% | tar xf -',
+    'install' => "${prefix}/bin/ruby install.rb --no-configs",
+} ;
+
 
 $puppet322 = {
     'name'    => 'Puppet 3.2.2',
@@ -140,6 +150,7 @@ $puppet322 = {
     augeas110
     ruby_augeas050
     rubyshadow214
+    hiera121
     facter171
     puppet322
     / ;

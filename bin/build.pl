@@ -8,7 +8,7 @@ chop ($arch = `uname -p`) ;
 
 # Setup global varibales available later
 
-$eis_puppet_version = '0.3.3' ;
+$eis_puppet_version = '0.3.6' ;
 my ($os, $rev) = (`uname -s`, `uname -r`) ;
 chomp ($os, $rev) ;
 if ($os eq 'Linux') {
