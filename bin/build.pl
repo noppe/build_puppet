@@ -8,7 +8,7 @@ chop ($arch = `uname -p`) ;
 
 # Setup global varibales available later
 
-$eis_puppet_version = '0.3.6' ;
+$eis_puppet_version = '0.3.7' ;
 my ($os, $rev) = (`uname -s`, `uname -r`) ;
 chomp ($os, $rev) ;
 if ($os eq 'Linux') {
@@ -47,7 +47,7 @@ sub packup {
     return if -d $p->{'srcdir'} ;
     chdir $src ;
     ($foo = $p->{'packup'}) =~ s/%([A-Z]+)%/$p->{lc $1}/eg ;
-    open FOO, "-|", $foo || die 'Packup fail' ;
+    open (FOO, "$foo |") || die 'Packup fail' ;
     while (defined <FOO>) {
 	logprint $_ ;
     }
@@ -80,33 +80,34 @@ sub build {
     logprint "Configure: " . $p->{'configure'}, "\n" ;
     
     $cmd = expand ($p, 'configure') ;
-    open CMD, "$cmd |" ;
+    logprint "  Command: $cmd " ;
+    open (CMD, "$cmd |") ;
     while (<CMD>) {
 	logprint $_ ;
         print $_ if /fatal|error/i ;
     }
     close CMD ;
-    exit $? if $? ;
+    #exit $? if $? ;
 
     logprint "make: " . $p->{'make'}, "\n" ;
     $cmd = expand ($p, 'make') ;
-    open CMD, "$cmd |" ;
+    open (CMD, "$cmd |") ;
     while (<CMD>) {
 	logprint $_ ;
 	print $_ if /fatal|error/i ;
     }
     close CMD ;
-    exit $? if $? ;
+    #exit $? if $? ;
     
     logprint "Install: " . $p->{'install'}, "\n" ;
     $cmd = expand ($p, 'install') ;
-    open CMD, "$cmd |" ;
+    open (CMD, "$cmd |") ;
     while (<CMD>) {
 	logprint $_ ;
 	print $_ if /fatal|error/i ;
     }
     close CMD ;
-    exit $? if $? ;
+    #exit $? if $? ;
 
     while (($k, $v) = each %remember) {
 	$ENV{$k} = $v ;
@@ -136,16 +137,16 @@ sub packit {
 		     "d none /var/lib/puppet 0755 bin bin\n") ;
     if ($postinstall) {
 	unshift @proto, "i postinstall=./postinstall\n" ;
-	open PI, "> ${prefix}/postinstall" ;
+	open (PI, "> ${prefix}/postinstall") ;
 	print PI $postinstall ;
         close PI ;
     }
     unshift @proto, "i pkginfo=./pkginfo\n" ;
-    open PROTO, "> ${prefix}/prototype" ;
+    open (PROTO, "> ${prefix}/prototype") ;
     print PROTO @proto ;
     close PROTO ;
 
-    open PKGINFO, "> ${prefix}/pkginfo" ;
+    open (PKGINFO, "> ${prefix}/pkginfo") ;
     print PKGINFO join ("\n", @pkginfo) ;
     close PKGINFO ;
 
@@ -154,7 +155,7 @@ sub packit {
 }
 
 sub rpmit {
-    open CTRL, ">", "/tmp/puppet.spec" ;
+    open (CTRL, "> /tmp/puppet.spec") ;
     print CTRL join ("\n", @rpminfo), "\n" ;
     close CTRL ;
     
@@ -163,7 +164,7 @@ sub rpmit {
 
 sub debit {
     mkdir "${prefix}/DEBIAN", 0755 unless -d "${prefix}/DEBIAN" ;
-    open CTRL, "> ${prefix}/DEBIAN/control" ;
+    open (CTRL, "> ${prefix}/DEBIAN/control") ;
     print CTRL join ("\n", @debinfo), "\n" ;
     close CTRL ;
 }
@@ -172,7 +173,7 @@ sub fetch {
     my $p = shift ;
     my $cmd = $p->{'fetch'} ;
     chdir "${top}/tgzs" ;
-    open FETCH, "-|", $cmd || die "Fetching " . $p->{'name'} . " failed" ;
+    open (FETCH, "$cmd |") || die "Fetching " . $p->{'name'} . " failed" ;
     while (defined <FETCH>) {
 	logprint $_ ;
     }
@@ -196,18 +197,18 @@ GetOptions (
     ) ;
 
 mkdir "${top}/logs", 0755 unless -d "${top}/logs" ;
-open LOG1, ">", "$top/logs/build.$hostname-$$" ;
-open LOG2, ">", "$top/logs/latest" ;
+open (LOG1, "> $top/logs/build.$hostname-$$") ;
+open (LOG2, "> $top/logs/latest") ;
 
-logprint "settings\n" ;
+logprint "Main settings\n" ;
 require "$top/bin/settings.pl" ;
 if (-f "$top/bin/settings.$platform_os.pl") {
-    logprint "$platform_os settings\n" ;
+    logprint "Platform: $platform_os settings\n" ;
     print "$platform_os settings\n" ;
     require "$top/bin/settings.$platform_os.pl" ;
 }
 if (-f "$top/bin/settings.$hostname.pl") {
-    logprint "$hostname settings\n" ;
+    logprint "Host: $hostname settings\n" ;
     print "$hostname settings\n" ;
     require "$top/bin/settings.$hostname.pl" ;
 }
