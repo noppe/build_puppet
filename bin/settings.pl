@@ -3,6 +3,7 @@
 #
 
 %pathmap = (
+	    'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin",
 	    'SunOS-5.10' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",
 	    'SunOS-5.11' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",
 	    );
@@ -131,6 +132,15 @@ $hiera121 = {
     'install' => "${prefix}/bin/ruby install.rb --no-configs",
 } ;
 
+$puppet324 = {
+    'name'    => 'Puppet 3.2.4',
+    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.2.4.tar.gz', 
+    'pkgsrc'  => $top . '/tgzs/puppet-3.2.4.tar.gz',
+    'srcdir'  => "${top}/${src}/puppet-3.2.4",
+    'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
+    'install' => "${prefix}/bin/ruby install.rb --no-configs",
+
+} ;
 
 $puppet322 = {
     'name'    => 'Puppet 3.2.2',
@@ -152,7 +162,7 @@ $puppet322 = {
     rubyshadow214
     hiera121
     facter171
-    puppet322
+    puppet324
     / ;
 
 $target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
