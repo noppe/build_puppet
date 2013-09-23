@@ -59,7 +59,7 @@ $readline62 = {
     'pkgsrc'    => "${top}/tgzs/readline-6.2.tar.gz",
     'srcdir'    => "${top}/${src}/readline-6.2",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-    'configure' => "./configure --prefix=${prefix} CFLAGS=-static-libgcc",
+    'configure' => "./configure --with-curses --prefix=${prefix} CFLAGS=-static-libgcc",
     'make'      => 'make',
     'install'   => 'make install',
     'env' => { 
@@ -74,7 +74,7 @@ $augeas110 = {
     'pkgsrc'    => "${top}/tgzs/augeas-1.1.0.tar.gz",
     'srcdir'    => "${top}/${src}/augeas-1.1.0",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-    'configure' => "./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\"-L${prefix}/lib -R${prefix}/lib\" CFLAGS=-static-libgcc",
+    'configure' => "./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\"-L${prefix}/lib -R${prefix}/lib -lncurses\" CFLAGS=-static-libgcc",
     'make'      => 'gmake',
     'install'   => 'gmake install',
     'env' => { 

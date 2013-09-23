@@ -1,7 +1,7 @@
 
 $openssl098w = { 
     %{$openssl098w},
-    'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} linux-x86_64 -static-libgcc",
+    'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} linux-elf -static-libgcc",
 } ;
 		 
 $ruby187p358 = {
@@ -11,5 +11,5 @@ $ruby187p358 = {
 
 $augeas110 = {
     %{$augeas110},
-    'configure' => "./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\'-L${prefix}/lib -Wl,-rpath,${prefix}/lib\' CFLAGS=-static-libgcc",
+    'configure' => "./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\'-L${prefix}/lib -Wl,-rpath,${prefix}/lib\' CFLAGS=\'-static-libgcc -lncurses\'",
 } ;
