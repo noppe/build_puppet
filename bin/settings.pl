@@ -59,7 +59,7 @@ $readline62 = {
     'pkgsrc'    => "${top}/tgzs/readline-6.2.tar.gz",
     'srcdir'    => "${top}/${src}/readline-6.2",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-    'configure' => "./configure --prefix=${prefix} CFLAGS=-static-libgcc",
+    'configure' => "./configure --with-curses --prefix=${prefix} CFLAGS=-static-libgcc",
     'make'      => 'make',
     'install'   => 'make install',
     'env' => { 

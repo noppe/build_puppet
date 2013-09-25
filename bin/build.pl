@@ -12,17 +12,22 @@ $eis_puppet_version = '0.3.6' ;
 my ($os, $rev) = (`uname -s`, `uname -r`) ;
 chomp ($os, $rev) ;
 if ($os eq 'Linux') {
+  if ( -f "/etc/redhat-release" ) {
+    open FH, "/etc/redhat-release" ;
+    $x = <FH> ; close FH ;
+    if ($x =~ /(\w+)\s+release\s+([\d\.]+)/ ) {
+      $flavor = $1 . "-" . $2 ;
+      $platform_os = $flavor ;
+    }
+  } else {
     my $flavor = `uname -v` ;
     chomp ($flavor) ;
     if ($flavor =~ /-(Ubuntu)/) {
-	$platform_os = "$1-$rev" ;
-    } elsif ($flavor =~ /(RHEL)/i) {
-	$platform_os = "$1-$rev" ;
+      $platform_os = "$1-$rev" ;
     } else {
-	$platform_os = "$flavor-$rev" ;
-    }
-} else {
-    $platform_os = "$os-$rev" ;
+      $platform_os = "$flavor-$rev" ;
+    } 
+  }
 }
 
 
