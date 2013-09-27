@@ -16,11 +16,14 @@ if ($os eq 'Linux') {
     open FH, "/etc/redhat-release" ;
     $x = <FH> ; close FH ;
     if ($x =~ /^Red Hat/ ) {
-      $x =~ /release\s+([\d\.]+)/ && { $rel = $1 } ;
+      $x =~ /release\s+(\d+)\.(\d+)/ && { $maj = $1 ; $min = $2 ; $rel = $maj . '.' . $min } ;
       $platform_os = 'RedHat-' . $rel ;
-    } elsif ($x =~ /(\w+)\s+release\s+([\d\.]+)/ ) {
-      $flavor = $1 . "-" . $2 ;
+      $ostype = "r$maj"
+    } elsif ($x =~ /(\w+)\s+release\s+(\d+)\.(\d+)/ ) {
+      $maj = $2 ; $min = $3 ;
+      $flavor = $1 . "-" . $maj . '.' . $min ;
       $platform_os = $flavor ;
+      $ostype = "r$maj" ;
     }
   } else {
     my $flavor = `uname -v` ;
@@ -31,6 +34,10 @@ if ($os eq 'Linux') {
       $platform_os = "$flavor-$rev" ;
     } 
   }
+} elsif ($os eq 'SunOS') {
+  ($srev = $rev) =~ s/^5\.// ;
+
+  $ostype = 's' . $srev ;
 }
 
 
@@ -261,14 +268,14 @@ foreach $name (@packages) {
 }
 
 if ($packit) {
-  chdir 'fpmtop' 
   if ($os =~ /solaris|sunos/) {
     @pkgtype = ('solaris') ;
   } else {
     @pkgtype = ('rpm', 'deb') ;
   }
+  chdir 'fpmtop' ;
   foreach $typ (@pkgtype) {
     system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt" ; 
-    system "fpm -n eispuppet_r$ostype -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsosn@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
+    system "fpm -n eispuppet_$ostype -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsosn@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
   }
 }
