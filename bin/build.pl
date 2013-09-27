@@ -8,7 +8,7 @@ chop ($arch = `uname -p`) ;
 
 # Setup global varibales available later
 
-$eis_puppet_version = '0.3.7' ;
+$eis_puppet_version = '0.3.8' ;
 my ($os, $rev) = (`uname -s`, `uname -r`) ;
 chomp ($os, $rev) ;
 if ($os eq 'Linux') {
@@ -16,9 +16,13 @@ if ($os eq 'Linux') {
     open FH, "/etc/redhat-release" ;
     $x = <FH> ; close FH ;
     if ($x =~ /^Red Hat/ ) {
-      $x =~ /release\s+(\d+)\.(\d+)/ && { $maj = $1 ; $min = $2 ; $rel = $maj . '.' . $min } ;
+      if ($x =~ /release\s+(\d+)\.(\d+)/) {
+        $maj = $1 ;
+        $min = $2 ; 
+        $rel = $maj . '.' . $min ;
+      } 
       $platform_os = 'RedHat-' . $rel ;
-      $ostype = "r$maj"
+      $ostype = "r$maj" ;
     } elsif ($x =~ /(\w+)\s+release\s+(\d+)\.(\d+)/ ) {
       $maj = $2 ; $min = $3 ;
       $flavor = $1 . "-" . $maj . '.' . $min ;
@@ -203,7 +207,7 @@ sub fetch {
 
 $dump = 0 ;
 $err = 'ignore' ;
-$packit = 1 ;
+$packit = "1" ;
 GetOptions (
     'top=s'      => \$top, 
     'error=s'    => \$err,
@@ -274,8 +278,9 @@ if ($packit) {
     @pkgtype = ('rpm', 'deb') ;
   }
   chdir 'fpmtop' ;
-  foreach $typ (@pkgtype) {
+  foreach $pkgtype (@pkgtype) {
     system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt" ; 
+    print "fpm -n eispuppet_$ostype -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsosn@ericsson.com --description 'EIS CM puppet client' var etc opt\n" ;
     system "fpm -n eispuppet_$ostype -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsosn@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
   }
 }

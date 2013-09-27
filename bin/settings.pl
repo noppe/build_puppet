@@ -123,6 +123,15 @@ $facter171 = {
     'install' => "${prefix}/bin/ruby install.rb",
 } ;
 
+$facter173 = {
+    'name'    => 'Facter 1.7.3',
+    'fetch'   => 'wget http://downloads.puppetlabs.com/facter/facter-1.7.3.tar.gz', 
+    'pkgsrc'  => $top . '/tgzs/facter-1.7.3.tar.gz',
+    'srcdir'  => "${top}/${src}/facter-1.7.3",
+    'packup'  => 'gunzip -c  %PKGSRC% | tar xf -',
+    'install' => "${prefix}/bin/ruby install.rb",
+} ;
+
 $hiera121 = {
     'name'    => 'Hiera 1.2.1',
     'fetch'   => 'wget http://downloads.puppetlabs.com/hiera/hiera-1.2.1.tar.gz',
@@ -130,6 +139,16 @@ $hiera121 = {
     'srcdir'  => "${top}/${src}/hiera-1.2.1",
     'packup'  => 'gunzip -c %PKGSRC% | tar xf -',
     'install' => "${prefix}/bin/ruby install.rb --no-configs",
+} ;
+
+$puppet322 = {
+    'name'    => 'Puppet 3.2.2',
+    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.2.2.tar.gz', 
+    'pkgsrc'  => $top . '/tgzs/puppet-3.2.2.tar.gz',
+    'srcdir'  => "${top}/${src}/puppet-3.2.2",
+    'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
+    'install' => "${prefix}/bin/ruby install.rb --no-configs",
+
 } ;
 
 $puppet324 = {
@@ -142,11 +161,11 @@ $puppet324 = {
 
 } ;
 
-$puppet322 = {
-    'name'    => 'Puppet 3.2.2',
-    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.2.2.tar.gz', 
-    'pkgsrc'  => $top . '/tgzs/puppet-3.2.2.tar.gz',
-    'srcdir'  => "${top}/${src}/puppet-3.2.2",
+$puppet330 = {
+    'name'    => 'Puppet 3.3.0',
+    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.0.tar.gz', 
+    'pkgsrc'  => $top . '/tgzs/puppet-3.3.0.tar.gz',
+    'srcdir'  => "${top}/${src}/puppet-3.3.0",
     'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
     'install' => "${prefix}/bin/ruby install.rb --no-configs",
 
@@ -161,8 +180,8 @@ $puppet322 = {
     ruby_augeas050
     rubyshadow214
     hiera121
-    facter171
-    puppet324
+    facter173
+    puppet330
     / ;
 
 $target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
