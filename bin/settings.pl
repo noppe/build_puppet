@@ -23,11 +23,11 @@ $zlib128 = {
     },
 } ;
 
-$openssl098w = {
-    'name'      => 'openssl 0.9.8w',
-    'fetch'     => 'wget http://www.openssl.org/source/openssl-0.9.8w.tar.gz',
-    'pkgsrc'    => $top . '/tgzs/openssl-0.9.8w.tar.gz',
-    'srcdir'    => $top . '/' . $src . '/openssl-0.9.8w',
+$openssl101e = {
+    'name'      => 'openssl 1.0.1e',
+    'fetch'     => 'wget http://www.openssl.org/source/openssl-1.0.1e.tar.gz',
+    'pkgsrc'    => $top . '/tgzs/openssl-1.0.1e.tar.gz',
+    'srcdir'    => $top . '/' . $src . '/openssl-1.0.1e',
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
     'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
     'make'      => 'make',
@@ -38,11 +38,11 @@ $openssl098w = {
     },
 } ;
 
-$ruby187p358 = {
-    'name'      => 'ruby-1.8.7',
-    'fetch'     => 'wget ftp://ftp.ruby-lang.org/pub/ruby/ruby-1.8.7-p358.tar.gz',
-    'pkgsrc'    => $top . '/tgzs/ruby-1.8.7-p358.tar.gz',
-    'srcdir'    => "${top}/${src}/ruby-1.8.7-p358",
+$ruby193p448 = {
+    'name'      => 'ruby-1.9.3',
+    'fetch'     => 'wget ftp://ftp.ruby-lang.org/pub/ruby/ruby-1.9.3-p448.tar.gz',
+    'pkgsrc'    => $top . '/tgzs/ruby-1.9.3-p448.tar.gz',
+    'srcdir'    => "${top}/${src}/ruby-1.9.3-p448",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
     'configure' => "./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
     'make'      => 'make',
@@ -114,15 +114,6 @@ $rubyshadow214 = {
     },
 } ;
 
-$facter171 = {
-    'name'    => 'Facter 1.7.1',
-    'fetch'   => 'wget http://downloads.puppetlabs.com/facter/facter-1.7.1.tar.gz', 
-    'pkgsrc'  => $top . '/tgzs/facter-1.7.1.tar.gz',
-    'srcdir'  => "${top}/${src}/facter-1.7.1",
-    'packup'  => 'gunzip -c  %PKGSRC% | tar xf -',
-    'install' => "${prefix}/bin/ruby install.rb",
-} ;
-
 $facter173 = {
     'name'    => 'Facter 1.7.3',
     'fetch'   => 'wget http://downloads.puppetlabs.com/facter/facter-1.7.3.tar.gz', 
@@ -141,31 +132,11 @@ $hiera121 = {
     'install' => "${prefix}/bin/ruby install.rb --no-configs",
 } ;
 
-$puppet322 = {
-    'name'    => 'Puppet 3.2.2',
-    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.2.2.tar.gz', 
-    'pkgsrc'  => $top . '/tgzs/puppet-3.2.2.tar.gz',
-    'srcdir'  => "${top}/${src}/puppet-3.2.2",
-    'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
-    'install' => "${prefix}/bin/ruby install.rb --no-configs",
-
-} ;
-
-$puppet324 = {
-    'name'    => 'Puppet 3.2.4',
-    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.2.4.tar.gz', 
-    'pkgsrc'  => $top . '/tgzs/puppet-3.2.4.tar.gz',
-    'srcdir'  => "${top}/${src}/puppet-3.2.4",
-    'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
-    'install' => "${prefix}/bin/ruby install.rb --no-configs",
-
-} ;
-
-$puppet330 = {
-    'name'    => 'Puppet 3.3.0',
-    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.0.tar.gz', 
-    'pkgsrc'  => $top . '/tgzs/puppet-3.3.0.tar.gz',
-    'srcdir'  => "${top}/${src}/puppet-3.3.0",
+$puppet331 = {
+    'name'    => 'Puppet 3.3.1',
+    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.1.tar.gz', 
+    'pkgsrc'  => $top . '/tgzs/puppet-3.3.1.tar.gz',
+    'srcdir'  => "${top}/${src}/puppet-3.3.1",
     'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
     'install' => "${prefix}/bin/ruby install.rb --no-configs",
 
@@ -173,15 +144,15 @@ $puppet330 = {
 
 @packages = qw/
     zlib128
-    openssl098w
+    openssl101e
     readline62
-    ruby187p358
+    ruby193p448
     augeas110
     ruby_augeas050
     rubyshadow214
     hiera121
     facter173
-    puppet330
+    puppet331
     / ;
 
 $target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
