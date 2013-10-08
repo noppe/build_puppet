@@ -29,6 +29,15 @@ if ($os eq 'Linux') {
       $platform_os = $flavor ;
       $ostype = "r$maj" ;
     }
+  } elsif ( -f "/etc/SuSE-release" ) {
+    open FH, "/etc/SuSE-release" ;
+    while (<FH>) {
+      /^VERSION\s*=\s*(\d+)$/ && { $maj = $1 } ;
+      /^PATCHLEVEL\s*=\s*(\d+)$/ && { $min = $1 } ;
+    }
+    close FH ;
+    $ostype = "r" . ($maj > 9 ? "6" : "5") ;
+    $platform_os = "SuSE-$maj.$min" ;
   } else {
     my $flavor = `uname -v` ;
     chomp ($flavor) ;
