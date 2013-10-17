@@ -1,8 +1,0 @@
-#!/bin/sh
-
-test -d tgzs || mkdir tgzs
-
-while read pack ; do
-  read url
-  test -f tgzs/${pack} || wget -O tgzs/${pack} ${url}/${pack}
-done < files/packlist
