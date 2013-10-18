@@ -216,7 +216,7 @@ sub fetch {
 
 $dump = 0 ;
 $err = 'ignore' ;
-$packit = "1" ;
+$packit = "yes" ;
 GetOptions (
     'top=s'      => \$top, 
     'error=s'    => \$err,
@@ -280,7 +280,7 @@ foreach $name (@packages) {
     chdir $top ;
 }
 
-if ($packit) {
+if ($packit eq "yes") {
   if ($os =~ /solaris|sunos/) {
     @pkgtype = ('solaris') ;
   } else {

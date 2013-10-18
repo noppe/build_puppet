@@ -38,6 +38,23 @@ $openssl101e = {
     },
 } ;
 
+$ruby187p358 = {
+    'name'      => 'ruby-1.8.7',
+    'fetch'     => 'wget ftp://ftp.ruby-lang.org/pub/ruby/ruby-1.8.7-p358.tar.gz',
+    'pkgsrc'    => $top . '/tgzs/ruby-1.8.7-p358.tar.gz',
+    'srcdir'    => "${top}/${src}/ruby-1.8.7-p358",
+    'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
+    'configure' => "./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
+    'make'      => 'make',
+    'install'   => 'make install',
+    'env' => { 
+	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+#	'LDFLAGS' => '-static-libgcc', 
+#	'CFLAGS' => "-I${prefix}/include -L${prefix}/lib -R${prefix}/lib" 
+    },
+} ;
+
+
 $ruby193p448 = {
     'name'      => 'ruby-1.9.3',
     'fetch'     => 'wget ftp://ftp.ruby-lang.org/pub/ruby/ruby-1.9.3-p448.tar.gz',
@@ -146,7 +163,7 @@ $puppet331 = {
     zlib128
     openssl101e
     readline62
-    ruby193p448
+    ruby187p358
     augeas110
     ruby_augeas050
     rubyshadow214
