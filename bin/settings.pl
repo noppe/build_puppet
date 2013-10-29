@@ -1,12 +1,12 @@
 #
-# 
+#
 #
 
 %pathmap = (
-	    'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin",
-	    'SunOS-5.10' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",
-	    'SunOS-5.11' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",
-	    );
+      'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin",
+      'SunOS-5.10' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",
+      'SunOS-5.11' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",
+      );
 
 $zlib128 = {
     'name'      => 'zlib 1.2.8',
@@ -17,9 +17,9 @@ $zlib128 = {
     'configure' => './configure --prefix=' . $prefix,
     'make'      => 'make',
     'install'   => 'make install',
-    'env'       => { 
-	'LDFLAGS' => '-static-libgcc',
-	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    'env'       => {
+  'LDFLAGS' => '-static-libgcc',
+  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
@@ -32,9 +32,9 @@ $openssl101e = {
     'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
     'make'      => 'make',
     'install'   => 'make install',
-    'env'       => { 
-	'LDFLAGS' => '-static-libgcc',
-	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    'env'       => {
+  'LDFLAGS' => '-static-libgcc',
+  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
@@ -47,10 +47,10 @@ $ruby187p358 = {
     'configure' => "./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
     'make'      => 'make',
     'install'   => 'make install',
-    'env' => { 
-	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
-#	'LDFLAGS' => '-static-libgcc', 
-#	'CFLAGS' => "-I${prefix}/include -L${prefix}/lib -R${prefix}/lib" 
+    'env' => {
+  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+#  'LDFLAGS' => '-static-libgcc',
+#  'CFLAGS' => "-I${prefix}/include -L${prefix}/lib -R${prefix}/lib"
     },
 } ;
 
@@ -64,10 +64,10 @@ $ruby193p448 = {
     'configure' => "./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
     'make'      => 'make',
     'install'   => 'make install',
-    'env' => { 
-	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
-#	'LDFLAGS' => '-static-libgcc', 
-#	'CFLAGS' => "-I${prefix}/include -L${prefix}/lib -R${prefix}/lib" 
+    'env' => {
+  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+#  'LDFLAGS' => '-static-libgcc',
+#  'CFLAGS' => "-I${prefix}/include -L${prefix}/lib -R${prefix}/lib"
     },
 } ;
 
@@ -80,8 +80,8 @@ $readline62 = {
     'configure' => "./configure --with-curses --prefix=${prefix} CFLAGS=-static-libgcc",
     'make'      => 'make',
     'install'   => 'make install',
-    'env' => { 
-	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    'env' => {
+  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
@@ -95,8 +95,8 @@ $augeas110 = {
     'configure' => "./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\"-L${prefix}/lib -R${prefix}/lib -lncurses\" CFLAGS=-static-libgcc",
     'make'      => 'gmake',
     'install'   => 'gmake install',
-    'env' => { 
-	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    'env' => {
+  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
@@ -109,11 +109,11 @@ $ruby_augeas050 = {
     'configure' => "cd ext/augeas ; echo \"require 'mkmf' ; extension_name = '_augeas' ; create_makefile(extension_name)\" > ee2.rb ; ${prefix}/bin/ruby ee2.rb ; cd ../..",
     'make'      => 'cd ext/augeas ; gmake CC="gcc -I/usr/include/libxml2 -laugeas" ; cd ../..',
     'install'   => "cp lib/augeas.rb ${prefix}/lib/ruby/site_ruby/1.8 ; cd ext/augeas ; gmake install; ",
-    'env' => { 
-	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    'env' => {
+  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
-    
+
 $rubyshadow214 = {
     'name'      => 'ruby-shadow 2.1.4',
     'fetch'     => 'git clone https://github.com/apalmblad/ruby-shadow.git ; cd ruby_shadow; git checkout 2.1.4',
@@ -125,15 +125,15 @@ $rubyshadow214 = {
     'configure' => "${prefix}/bin/ruby extconf.rb",
     'make'      => 'gmake CC=\'gcc -static-libgcc\'',
     'install'   => 'gmake install',
-    'env' => { 
-	'CFLAGS' => '-static-libgcc',
-	'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    'env' => {
+  'CFLAGS' => '-static-libgcc',
+  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
 $facter173 = {
     'name'    => 'Facter 1.7.3',
-    'fetch'   => 'wget http://downloads.puppetlabs.com/facter/facter-1.7.3.tar.gz', 
+    'fetch'   => 'wget http://downloads.puppetlabs.com/facter/facter-1.7.3.tar.gz',
     'pkgsrc'  => $top . '/tgzs/facter-1.7.3.tar.gz',
     'srcdir'  => "${top}/${src}/facter-1.7.3",
     'packup'  => 'gunzip -c  %PKGSRC% | tar xf -',
@@ -151,7 +151,7 @@ $hiera121 = {
 
 $puppet331 = {
     'name'    => 'Puppet 3.3.1',
-    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.1.tar.gz', 
+    'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.1.tar.gz',
     'pkgsrc'  => $top . '/tgzs/puppet-3.3.1.tar.gz',
     'srcdir'  => "${top}/${src}/puppet-3.3.1",
     'packup'  => 'gunzip -c  %PKGSRC% | tar xvf -',
@@ -204,7 +204,7 @@ $target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
     'Release: ' . $eis_puppet_version,
     'Licence: GPL',
     'Summary: EIS Puppet standalone package including tools and libs',
-    'Group: Applications/System', 
+    'Group: Applications/System',
     'Buildroot: ' . ${top},
     '',
     '%description',
