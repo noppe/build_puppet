@@ -6,3 +6,5 @@
 /tgzs/
 /src.*/
 
+# Vim
+*.swp

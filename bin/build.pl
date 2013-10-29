@@ -18,9 +18,9 @@ if ($os eq 'Linux') {
     if ($x =~ /^Red Hat/ ) {
       if ($x =~ /release\s+(\d+)\.(\d+)/) {
         $maj = $1 ;
-        $min = $2 ; 
+        $min = $2 ;
         $rel = $maj . '.' . $min ;
-      } 
+      }
       $platform_os = 'RedHat-' . $rel ;
       $ostype = "r$maj" ;
     } elsif ($x =~ /(\w+)\s+release\s+(\d+)\.(\d+)/ ) {
@@ -45,7 +45,7 @@ if ($os eq 'Linux') {
       $platform_os = "$1-$rev" ;
     } else {
       $platform_os = "$flavor-$rev" ;
-    } 
+    }
   }
 } elsif ($os eq 'SunOS') {
   ($srev = $rev) =~ s/^5\.// ;
@@ -77,11 +77,11 @@ sub packup {
     ($foo = $p->{'packup'}) =~ s/%([A-Z]+)%/$p->{lc $1}/eg ;
     open (FOO, "$foo |") || die 'Packup fail' ;
     while (defined <FOO>) {
-	logprint $_ ;
+  logprint $_ ;
     }
     close FOO ;
     if ($?) {
-	print "packup returned $?) \n" ;
+  print "packup returned $?) \n" ;
     }
     chdir $top ;
 }
@@ -97,21 +97,21 @@ sub expand {
 
 sub build {
     my $p = shift ;
-    
+
     chdir $p->{ 'srcdir' } ;
-    
+
     while (($k, $v) = each %{$p->{ 'env' }}) {
-	$remember {$k} = $v ;
-	$ENV{$k} = $v ;
-	logprint "setenv $k $v\n" ;
+  $remember {$k} = $v ;
+  $ENV{$k} = $v ;
+  logprint "setenv $k $v\n" ;
     }
     logprint "Configure: " . $p->{'configure'}, "\n" ;
-    
+
     $cmd = expand ($p, 'configure') ;
     logprint "  Command: $cmd " ;
     open (CMD, "$cmd |") ;
     while (<CMD>) {
-	logprint $_ ;
+  logprint $_ ;
         print $_ if /fatal|error/i ;
     }
     close CMD ;
@@ -121,24 +121,24 @@ sub build {
     $cmd = expand ($p, 'make') ;
     open (CMD, "$cmd |") ;
     while (<CMD>) {
-	logprint $_ ;
-	print $_ if /fatal|error/i ;
+  logprint $_ ;
+  print $_ if /fatal|error/i ;
     }
     close CMD ;
     #exit $? if $? ;
-    
+
     logprint "Install: " . $p->{'install'}, "\n" ;
     $cmd = expand ($p, 'install') ;
     open (CMD, "$cmd |") ;
     while (<CMD>) {
-	logprint $_ ;
-	print $_ if /fatal|error/i ;
+  logprint $_ ;
+  print $_ if /fatal|error/i ;
     }
     close CMD ;
     #exit $? if $? ;
 
     while (($k, $v) = each %remember) {
-	$ENV{$k} = $v ;
+  $ENV{$k} = $v ;
     }
 }
 
@@ -146,9 +146,9 @@ sub packit {
 
     # cleanup old files
     foreach (qw/prototype pkginfo postinstall/) {
-	unlink "${prefix}/$_" ;
+  unlink "${prefix}/$_" ;
     }
-    
+
     my @proto = `cd ${prefix} ; find . -print | pkgproto` ;
 
     #chop (my $name = `id -n -u`) ;
@@ -160,13 +160,13 @@ sub packit {
 
     grep ( { s/$name/bin/g ; s/$group/bin/g } @proto ) ;
 
-    unshift @proto, ("d none /etc/puppet 0755 bin bin\n", 
-		     "d none /opt/puppet 0755 bin bin\n",
-		     "d none /var/lib/puppet 0755 bin bin\n") ;
+    unshift @proto, ("d none /etc/puppet 0755 bin bin\n",
+         "d none /opt/puppet 0755 bin bin\n",
+         "d none /var/lib/puppet 0755 bin bin\n") ;
     if ($postinstall) {
-	unshift @proto, "i postinstall=./postinstall\n" ;
-	open (PI, "> ${prefix}/postinstall") ;
-	print PI $postinstall ;
+  unshift @proto, "i postinstall=./postinstall\n" ;
+  open (PI, "> ${prefix}/postinstall") ;
+  print PI $postinstall ;
         close PI ;
     }
     unshift @proto, "i pkginfo=./pkginfo\n" ;
@@ -186,7 +186,7 @@ sub rpmit {
     open (CTRL, "> /tmp/puppet.spec") ;
     print CTRL join ("\n", @rpminfo), "\n" ;
     close CTRL ;
-    
+
     system "rpmbuild --define \"_rpmdir /tmp\" --buildroot=$top -bb /tmp/puppet.spec" ;
 }
 
@@ -203,22 +203,22 @@ sub fetch {
     chdir "${top}/tgzs" ;
     open (FETCH, "$cmd |") || die "Fetching " . $p->{'name'} . " failed" ;
     while (defined <FETCH>) {
-	logprint $_ ;
+  logprint $_ ;
     }
     close FETCH ;
     if ($?) {
-	print "Fetch retval = $? \n" ;
+  print "Fetch retval = $? \n" ;
     }
     chdir $top ;
 }
 
-# --- 
+# ---
 
 $dump = 0 ;
 $err = 'ignore' ;
 $packit = "yes" ;
 GetOptions (
-    'top=s'      => \$top, 
+    'top=s'      => \$top,
     'error=s'    => \$err,
     'prefix=s'   => \$prefix,
     'packages=s' => \@pac,
@@ -250,17 +250,17 @@ print join (", ", @packages), "\n" ;
 print "Platform_os = ${platform_os}\n" ;
 if ($dump) {
     foreach $name (@packages) {
-	$p = ${$name} ; 
+  $p = ${$name} ;
         print $name, "\n" ;
-        foreach (keys %{$p}) {    
-	    print "\t$_ => $p->{$_} \n" ; # if ref \{$p->{$_}} eq 'SCALAR' ;
-	    if (ref $p->{$_} eq 'HASH') {
-		print "\t", $p->{$_}, "\n" ;
-		while (($k, $v) = each %{$p->{$_}}) {
-		    print "\t\t$k => $v \n" ;
-		}
-	    }
-	}
+        foreach (keys %{$p}) {
+      print "\t$_ => $p->{$_} \n" ; # if ref \{$p->{$_}} eq 'SCALAR' ;
+      if (ref $p->{$_} eq 'HASH') {
+    print "\t", $p->{$_}, "\n" ;
+    while (($k, $v) = each %{$p->{$_}}) {
+        print "\t\t$k => $v \n" ;
+    }
+      }
+  }
     }
     exit 0 ;
 }
@@ -288,7 +288,7 @@ if ($packit eq "yes") {
   }
   chdir 'fpmtop' ;
   foreach $pkgtype (@pkgtype) {
-    system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt" ; 
+    system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt" ;
     print "fpm -n eispuppet_$ostype -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsosn@ericsson.com --description 'EIS CM puppet client' var etc opt\n" ;
     system "fpm -n eispuppet_$ostype -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsosn@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
   }
