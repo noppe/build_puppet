@@ -147,8 +147,8 @@ $hiera121 = {
     'fetch'   => 'wget http://downloads.puppetlabs.com/hiera/hiera-1.2.1.tar.gz',
     'pkgsrc'  => $top . '/tgzs/hiera-1.2.1.tar.gz',
     'srcdir'  => "${top}/${src}/hiera-1.2.1",
-    'packup'  => 'gunzip -c %PKGSRC% | tar xf - ; cp ${top}/patches/hiera/install.rb .',
-    'install' => "${prefix}/bin/ruby install.rb --no-configs",
+    'packup'  => "gunzip -c %PKGSRC% | tar xf -",
+    'install' => "test -f install.rb || cp ${top}/patches/hiera/install.rb . ; ${prefix}/bin/ruby install.rb --no-configs",
 } ;
 
 $puppet331 = {
