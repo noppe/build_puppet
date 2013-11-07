@@ -2,6 +2,8 @@
 #
 #
 
+$eis_puppet_version = '3.3.1-e4' ;
+
 %pathmap = (
       'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin",
       'SunOS-5.10' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",

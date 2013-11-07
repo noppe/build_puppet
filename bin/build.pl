@@ -8,7 +8,6 @@ chop ($arch = `uname -p`) ;
 
 # Setup global varibales available later
 
-$eis_puppet_version = '3.3.1' ;
 my ($os, $rev) = (`uname -s`, `uname -r`) ;
 chomp ($os, $rev) ;
 if ($os eq 'Linux') {
@@ -22,12 +21,12 @@ if ($os eq 'Linux') {
         $rel = $maj . '.' . $min ;
       }
       $platform_os = 'RedHat-' . $rel ;
-      $ostype = "r$maj" ;
+      $ostype = 'redhat-' . $maj . '-compat' ;
     } elsif ($x =~ /(\w+)\s+release\s+(\d+)\.(\d+)/ ) {
       $maj = $2 ; $min = $3 ;
       $flavor = $1 . "-" . $maj . '.' . $min ;
       $platform_os = $flavor ;
-      $ostype = "r$maj" ;
+      $ostype = 'redhat-' . $maj . '-compat' ;
     }
   } elsif ( -f "/etc/SuSE-release" ) {
     open FH, "/etc/SuSE-release" ;
@@ -36,21 +35,29 @@ if ($os eq 'Linux') {
       /^PATCHLEVEL\s*=\s*(\d+)$/ && { $min = $1 } ;
     }
     close FH ;
-    $ostype = "r" . ($maj > 9 ? "6" : "5") ;
+    $ostype = "redhat-" . ($maj > 9 ? "6" : "5") . '-compat' ;
     $platform_os = "SuSE-$maj.$min" ;
+  } elsif ( -f '/etc/lsb-release' ) {
+    open FH, '/etc/lsb-release' ;
+    while (<FH>) {
+      if (/DISTRIB_RELEASE=(\d+)\.(\d+)/) { $maj = $1 ; $min = $2  ; } ;
+    }
+    close FH ;
+    $ostype = 'redhat-' . ($maj > 12 ? "6" : "5") . '-compat' ;
+    $platform_os = "Ubuntu-$maj.$min" ; # Wild guessing here. Fix!
   } else {
     my $flavor = `uname -v` ;
     chomp ($flavor) ;
     if ($flavor =~ /-(Ubuntu)/) {
       $platform_os = "$1-$rev" ;
+      $ostype = 'redhat-5-compat' ;
     } else {
       $platform_os = "$flavor-$rev" ;
     }
   }
 } elsif ($os eq 'SunOS') {
   ($srev = $rev) =~ s/^5\.// ;
-
-  $ostype = 's' . $srev ;
+  $ostype = 'solaris-' . $srev ;
 }
 
 
@@ -289,7 +296,8 @@ if ($packit eq "yes") {
   chdir 'fpmtop' ;
   foreach $pkgtype (@pkgtype) {
     system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt" ;
-    print "fpm -n eispuppet_$ostype -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsosn@ericsson.com --description 'EIS CM puppet client' var etc opt\n" ;
-    system "fpm -n eispuppet_$ostype -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsosn@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
+    print "fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt\n" ;
+    system "fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
+    system "mv eispuppet*.$pkgtype $ostype" ;
   }
 }
