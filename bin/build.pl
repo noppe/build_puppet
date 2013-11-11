@@ -55,9 +55,10 @@ if ($os eq 'Linux') {
       $platform_os = "$flavor-$rev" ;
     }
   }
-} elsif ($os eq 'SunOS') {
+} elsif ($os =~ /SunOS/) {
   ($srev = $rev) =~ s/^5\.// ;
   $ostype = 'solaris-' . $srev ;
+  $platform_os = $os . '-' . $rev ;
 }
 
 
@@ -288,16 +289,17 @@ foreach $name (@packages) {
 }
 
 if ($packit eq "yes") {
-  if ($os =~ /solaris|sunos/) {
+  if ($os =~ /solaris|sunos/i) {
     @pkgtype = ('solaris') ;
+    packit ;
   } else {
     @pkgtype = ('rpm', 'deb') ;
-  }
-  chdir 'fpmtop' ;
-  foreach $pkgtype (@pkgtype) {
-    system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt" ;
-    print "fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt\n" ;
-    system "fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
-    system "mv eispuppet*.$pkgtype $ostype" ;
+    chdir 'fpmtop' ;
+    foreach $pkgtype (@pkgtype) {
+      system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt" ;
+      print "fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt\n" ;
+      system "fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
+      system "mv eispuppet*.$pkgtype $ostype" ;
+    }
   }
 }
