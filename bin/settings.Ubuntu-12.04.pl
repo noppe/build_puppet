@@ -49,11 +49,10 @@ $augeas110 = {
     'install'   => 'make install',
 } ;
 
-#    'configure' => "cd ext/augeas ; echo \"require 'mkmf' ; extension_name = '_augeas' ; create_makefile(extension_name)\" > ee2.rb ; ${prefix}/bin/ruby ee2.rb ; cd ../..",
 $ruby_augeas050 = {
     %{$ruby_augeas050},
     'configure' => "cd ext/augeas ; ${prefix}/bin/ruby extconf.rb ; cd ../..",
-    'make'      => 'cd ext/augeas ; cd ../..',
+    'make'      => 'cd ext/augeas ; make ; cd ../..',
     'install'   => "cp lib/augeas.rb ${prefix}/lib/ruby/site_ruby/1.8 ; cd ext/augeas ; make install",
 } ;
 
