@@ -118,7 +118,7 @@ $ruby_augeas050 = {
 
 $rubyshadow214 = {
     'name'      => 'ruby-shadow 2.1.4',
-    'fetch'     => 'git clone https://github.com/apalmblad/ruby-shadow.git ; cd ruby_shadow; git checkout 2.1.4',
+    'fetch'     => 'git clone https://github.com/apalmblad/ruby-shadow.git ; cd ruby-shadow; git checkout 2.1.4',
     'pkgsrc'    => $top . '/tgzs/ruby-shadow.tar.gz',
     'srcdir'    => "${top}/${src}/ruby-shadow",
     'packup'    => "cp -r ${top}/tgzs/ruby-shadow ${top}/${src}/ruby-shadow",
@@ -162,17 +162,17 @@ $puppet331 = {
 } ;
 
 @packages = qw/
-    zlib128
-    openssl101e
-    readline62
-    ruby187p358
-    augeas110
-    ruby_augeas050
-    rubyshadow214
-    hiera121
-    facter173
-    puppet331
-    / ;
+		zlib128
+		openssl101e
+		readline62
+		ruby187p358
+		augeas110
+		ruby_augeas050
+		rubyshadow214
+		hiera121
+		facter173
+		puppet331
+	      / ;
 
 $target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
 
