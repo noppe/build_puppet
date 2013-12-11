@@ -8,6 +8,7 @@ chop ($arch = `uname -p`) ;
 
 # Setup global varibales available later
 
+my $fpm = "fpm";
 my ($os, $rev) = (`uname -s`, `uname -r`) ;
 chomp ($os, $rev) ;
 if ($os eq 'Linux') {
@@ -45,6 +46,7 @@ if ($os eq 'Linux') {
     close FH ;
     $ostype = 'redhat-' . ($maj > 12 ? "6" : "5") . '-compat' ;
     $platform_os = "Ubuntu-$maj.$min" ; # Wild guessing here. Fix!
+    $fpm = "/usr/local/bin/fpm";
   } else {
     my $flavor = `uname -v` ;
     chomp ($flavor) ;
@@ -80,6 +82,7 @@ sub logprint {
 
 sub packup {
     my $p = shift ;
+    my $retval;
     return if -d $p->{'srcdir'} ;
     chdir $src ;
     ($foo = $p->{'packup'}) =~ s/%([A-Z]+)%/$p->{lc $1}/eg ;
@@ -87,11 +90,10 @@ sub packup {
     while (defined <FOO>) {
   logprint $_ ;
     }
-    close FOO ;
-    if ($?) {
-  print "packup returned $?) \n" ;
-    }
+    close FOO;
+    $retval = $?;
     chdir $top ;
+    return($retval);
 }
 
 sub expand {
@@ -208,16 +210,16 @@ sub debit {
 sub fetch {
     my $p = shift ;
     my $cmd = $p->{'fetch'} ;
+    my $retval;
     chdir "${top}/tgzs" ;
     open (FETCH, "$cmd |") || die "Fetching " . $p->{'name'} . " failed" ;
     while (defined <FETCH>) {
   logprint $_ ;
     }
     close FETCH ;
-    if ($?) {
-  print "Fetch retval = $? \n" ;
-    }
-    chdir $top ;
+    $retval = $?;
+    chdir $top;
+    return($retval);
 }
 
 # ---
@@ -278,14 +280,17 @@ mkdir 'tgzs', 0755 unless -d 'tgzs' ;
 mkdir 'packages', 0755 unless -d 'packages' ;
 mkdir $src, 0755 unless -d $src ;
 foreach $name (@packages) {
-    $_ = ${$name} ;
-    logprint $_->{'name'}, "\n" ;
-    print $_->{'name'}, "\n" ;
-    fetch ($_) unless -f $_->{'pkgsrc'} ;
-    packup ($_) unless -d $_->{'srcdir'} ;
-    chdir $_->{'srcdir'} ;
-    build ($_) ;
-    chdir $top ;
+  my $retval;
+  $_ = ${$name} ;
+  logprint $_->{'name'}, "\n" ;
+  print $_->{'name'}, "\n" ;
+  $retval = fetch ($_) unless -f $_->{'pkgsrc'} ;
+  die ("Fetch returned $retval on package $name\n") if ($retval != 0);
+  $retval = packup ($_) unless -d $_->{'srcdir'} ;
+  die ("Packup returned $retval on package $name\n") if ($retval != 0);
+  chdir $_->{'srcdir'} ;
+  build ($_) ;
+  chdir $top ;
 }
 
 if ($packit eq "yes") {
@@ -297,8 +302,8 @@ if ($packit eq "yes") {
     chdir 'fpmtop' ;
     foreach $pkgtype (@pkgtype) {
       system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt" ;
-      print "fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt\n" ;
-      system "fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
+      print "$fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt\n" ;
+      system "$fpm -n eispuppet -v $eis_puppet_version -t $pkgtype -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt" ;
       system "mv eispuppet*.$pkgtype $ostype" ;
     }
   }
