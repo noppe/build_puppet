@@ -168,16 +168,16 @@ sub packit {
 
     logprint $name, " ",  $group, "\n" ;
 
-    grep ( { s/$name/bin/g ; s/$group/bin/g } @proto ) ;
+    grep ( { s/\b$name\b/bin/g ; s/\b$group\b/bin/g } @proto ) ;
 
     unshift @proto, ("d none /etc/puppet 0755 bin bin\n",
          "d none /opt/puppet 0755 bin bin\n",
          "d none /var/lib/puppet 0755 bin bin\n") ;
     if ($postinstall) {
-  unshift @proto, "i postinstall=./postinstall\n" ;
-  open (PI, "> ${prefix}/postinstall") ;
-  print PI $postinstall ;
-        close PI ;
+      unshift @proto, "i postinstall=./postinstall\n" ;
+      open (PI, "> ${prefix}/postinstall") ;
+      print PI $postinstall ;
+      close PI ;
     }
     unshift @proto, "i pkginfo=./pkginfo\n" ;
     open (PROTO, "> ${prefix}/prototype") ;
@@ -296,6 +296,10 @@ foreach $name (@packages) {
 if ($packit eq "yes") {
   if ($os =~ /solaris|sunos/i) {
     @pkgtype = ('solaris') ;
+    if ($ostype eq 'solaris-9') {
+      system "cp ${top}/fpmtop/init.d/Solaris/puppetd ${prefix}/puppetd" ;
+    }
+    ##  system "cp ${top}/fpmtop/init.d/Solaris/smf/puppetd.xml ${top}/fpmtop/
     packit ;
   } else {
     @pkgtype = ('rpm', 'deb') ;
