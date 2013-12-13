@@ -237,16 +237,16 @@ if [ ! -f /etc/puppet/puppet.conf ] ; then
 
 [main]
     # The Puppet log directory.
-    # The default value is '$vardir/log'.
+    # The default value is '/var/lib/puppet/log'.
     logdir = /var/log/puppet
 
     # Where Puppet PID files are kept.
-    # The default value is '$vardir/run'.
+    # The default value is '/var/lib/puppet/run'.
     rundir = /var/run/puppet
 
     # Where SSL certificates are kept.
-    # The default value is '$confdir/ssl'.
-    ssldir = $vardir/ssl
+    # The default value is '/etc/puppet/ssl'.
+    ssldir = /var/lib/puppet/ssl
 
     archive_files = true
     archive_file_server = puppet.rnd.ericsson.se
@@ -256,13 +256,13 @@ if [ ! -f /etc/puppet/puppet.conf ] ; then
     # associated with the retrieved configuratiion.  Can be loaded in
     # the separate ''puppet'' executable using the ''--loadclasses''
     # option.
-    # The default value is '$confdir/classes.txt'.
-    classfile = $vardir/classes.txt
+    # The default value is '/etc/puppet/classes.txt'.
+    classfile = /var/lib/puppet/classes.txt
 
     # Where puppetd caches the local configuration.  An
     # extension indicating the cache format is added automatically.
-    # The default value is '$confdir/localconfig'.
-    localconfig = $vardir/localconfig
+    # The default value is '/etc/puppet/localconfig'.
+    localconfig = /var/lib/puppet/localconfig
     report = true
     graph = true
     pluginsync = true
@@ -274,4 +274,3 @@ EOF
 
 fi
 EOT
-
