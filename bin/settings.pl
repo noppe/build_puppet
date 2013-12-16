@@ -2,10 +2,10 @@
 #
 #
 
-$eis_puppet_version = '3.3.1-e4' ;
+$eis_puppet_version = '3.3.1-6' ;
 
 %pathmap = (
-      'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin",
+      'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin:/usr/sfw/bin",
       'SunOS-5.10' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",
       'SunOS-5.11' =>  "/usr/sfw/bin:/usr/ccs/bin:/usr/bin:/bin",
       );
@@ -40,6 +40,48 @@ $openssl101e = {
     },
 } ;
 
+$libxml2291 = {
+    'name'	=> 'libxml2-2.9.1',
+    'fetch'	=> 'wget https://git.gnome.org/browse/libxml2/snapshot/libxml2-2.9.1.tar.gz',
+    'pkgsrc'	=> $top . '/tgzs/libxml2-2.9.1.tar.gz',
+    'srcdir'	=> "${top}/${src}/libxml2-2.9.1",
+    'packup'    => "gunzip -c  %PKGSRC% | tar xvf - && cp -r ${top}/patches/libxml2/* ${srcdir}",
+    'configure' => "./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
+    'make'      => 'make',
+    'install'   => 'make install',
+    'env' => {
+      'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    },
+} ;
+
+$libiconv114 = {
+    'name'	=> 'libiconv-1.14',
+    'fetch'	=> 'wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz',
+    'pkgsrc'	=> $top . '/tgzs/libiconv-1.14.tar.gz',
+    'srcdir'	=> "${top}/${src}/libiconv-1.14",
+    'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
+    'configure' => "./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
+    'make'      => 'make',
+    'install'   => 'make install',
+    'env' => {
+      'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    },
+} ;
+
+$ncurses59 = {
+    'name'	=> 'ncurses-5.9',
+    'fetch'	=> 'wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz',
+    'pkgsrc'	=> $top . '/tgzs/ncurses-5.9.tar.gz',
+    'srcdir'	=> "${top}/${src}/ncurses-5.9",
+    'packup'	=> 'gunzip -c  %PKGSRC% | tar xvf -',
+    'configure'	=> "./configure --prefix=${prefix} --with-terminfo-dirs=/usr/share/lib/terminfo --enable-termcap CFLAGS=-fPIC LDFLAGS=-static-libgcc ",
+    'make'	=> 'make',
+    'install'   => 'make install',
+    'env' => {
+      'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+    },
+} ;
+
 $ruby187p358 = {
     'name'      => 'ruby-1.8.7',
     'fetch'     => 'wget ftp://ftp.ruby-lang.org/pub/ruby/ruby-1.8.7-p358.tar.gz',
@@ -50,9 +92,7 @@ $ruby187p358 = {
     'make'      => 'make',
     'install'   => 'make install',
     'env' => {
-  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
-#  'LDFLAGS' => '-static-libgcc',
-#  'CFLAGS' => "-I${prefix}/include -L${prefix}/lib -R${prefix}/lib"
+      'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
@@ -67,9 +107,7 @@ $ruby193p448 = {
     'make'      => 'make',
     'install'   => 'make install',
     'env' => {
-  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
-#  'LDFLAGS' => '-static-libgcc',
-#  'CFLAGS' => "-I${prefix}/include -L${prefix}/lib -R${prefix}/lib"
+      'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
@@ -83,7 +121,7 @@ $readline62 = {
     'make'      => 'make',
     'install'   => 'make install',
     'env' => {
-  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+      'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
@@ -94,11 +132,14 @@ $augeas110 = {
     'pkgsrc'    => "${top}/tgzs/augeas-1.1.0.tar.gz",
     'srcdir'    => "${top}/${src}/augeas-1.1.0",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-    'configure' => "./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\"-L${prefix}/lib -R${prefix}/lib -lncurses\" CFLAGS=-static-libgcc",
+    'configure' => "./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\"-L${prefix}/lib -R${prefix}/lib -lcurses\" CFLAGS=-static-libgcc",
     'make'      => 'gmake',
     'install'   => 'gmake install',
     'env' => {
-  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+      'PATH'          => $pathmap {$platform_os} || '/bin:/usr/bin',
+      'LIBXML_CFLAGS' => '-I/opt/puppet/include/libxml2',
+      'LIBXML_LIBS'   => '-lxml2',
+ 
     },
 } ;
 
@@ -109,10 +150,12 @@ $ruby_augeas050 = {
     'srcdir'    => "${top}/${src}/ruby-augeas-0.5.0",
     'packup'    => 'gunzip -c  %PKGSRC% | tar xvf -',
     'configure' => "cd ext/augeas ; echo \"require 'mkmf' ; extension_name = '_augeas' ; create_makefile(extension_name)\" > ee2.rb ; ${prefix}/bin/ruby ee2.rb ; cd ../..",
-    'make'      => 'cd ext/augeas ; gmake CC="gcc -I/usr/include/libxml2 -laugeas" ; cd ../..',
+    'make'      => "cd ext/augeas ; gmake CC=\"gcc -I${prefix}/include/libxml2 -laugeas\" ; cd ../..",
     'install'   => "cp lib/augeas.rb ${prefix}/lib/ruby/site_ruby/1.8 ; cd ext/augeas ; gmake install; ",
     'env' => {
-  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+      'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+      'LIBXML_CFLAGS' => '-I/opt/puppet/include/libxml2',
+      'LIBXML_LIBS'   => '-lxml2',
     },
 } ;
 
@@ -128,8 +171,8 @@ $rubyshadow214 = {
     'make'      => 'gmake CC=\'gcc -static-libgcc\'',
     'install'   => 'gmake install',
     'env' => {
-  'CFLAGS' => '-static-libgcc',
-  'PATH'    => $pathmap {$platform_os} || '/bin:/usr/bin',
+      'CFLAGS' => '-static-libgcc',
+      'PATH'   => $pathmap {$platform_os} || '/bin:/usr/bin',
     },
 } ;
 
@@ -164,7 +207,9 @@ $puppet331 = {
 @packages = qw/
 		zlib128
 		openssl101e
+                libiconv114
 		readline62
+                ncurses59
 		ruby187p358
 		augeas110
 		ruby_augeas050
@@ -230,48 +275,32 @@ if [ ! -f /etc/puppet/puppet.conf ] ; then
     chmod 755 /etc/puppet
   fi
 
-  cat > /etc/puppet/puppet.conf <<EOF
-
-# This is a template file for puppet
-# EDIT at least all lines with server names
-
-[main]
-    # The Puppet log directory.
-    # The default value is '$vardir/log'.
-    logdir = /var/log/puppet
-
-    # Where Puppet PID files are kept.
-    # The default value is '$vardir/run'.
-    rundir = /var/run/puppet
-
-    # Where SSL certificates are kept.
-    # The default value is '$confdir/ssl'.
-    ssldir = $vardir/ssl
-
-    archive_files = true
-    archive_file_server = puppet.rnd.ericsson.se
-
-[agent]
-    # The file in which puppetd stores a list of the classes
-    # associated with the retrieved configuratiion.  Can be loaded in
-    # the separate ''puppet'' executable using the ''--loadclasses''
-    # option.
-    # The default value is '$confdir/classes.txt'.
-    classfile = $vardir/classes.txt
-
-    # Where puppetd caches the local configuration.  An
-    # extension indicating the cache format is added automatically.
-    # The default value is '$confdir/localconfig'.
-    localconfig = $vardir/localconfig
-    report = true
-    graph = true
-    pluginsync = true
-    # Insert server names below. For example:
-    #     server = puppet.rnd.ericsson.se
-    #     ca_server = puppetca.rnd.ericsson.se
-
-EOF
-
+  mv /opt/puppet/puppet.conf /etc/puppet/puppet.conf
 fi
 EOT
 
+if ($ostype eq 'solaris-9') {
+  $postinstall .= <<EOT;
+if [ ! -f /etc/init.d/puppetd ] ; then
+  cp /opt/puppet/puppetd /etc/init.d/puppetd
+  chmod +x /etc/init.d/puppetd
+fi
+EOT
+}
+elsif ($ostype eq 'solaris-10') {
+  $postinstall .= <<EOT;
+if [ ! -f /etc/init.d/puppetd ] ; then
+  cp /opt/puppet/puppetd /etc/init.d/puppetd
+  chmod +x /etc/init.d/puppetd
+fi
+#if [ ! -f /var/svc/manifest/network/puppetd.xml -a ! -f /lib/svc/method/svc-puppetd ] ; then
+#  cp /opt/puppet/puppetd.xml /var/svc/manifest/network/puppetd.xml
+#  cp /opt/puppet/svc-puppetd /lib/svc/method/svc-puppetd
+#  svccfg validate /var/svc/manifest/network/puppetd.xml
+#  svccfg import /var/svc/manifest/network/puppetd.xml
+#  chmod +x /lib/svc/method/svc-puppetd
+#fi
+EOT
+}
+
+1 ;
