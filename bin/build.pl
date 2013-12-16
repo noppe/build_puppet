@@ -20,7 +20,7 @@ my $fpm_category = 'eis_cm';
 my $fpm_provides = 'eis_cm';
 my $fpm_maintainer = 'nils.olof.xo.paulsson@ericsson.com';
 my $fpm_description = 'EIS CM puppet client';
-# directories that FPM will use in which to create package. Space separated string
+# directories that FPM will use in which to create package. Space separated string.
 my $fpm_directories = 'var etc opt';
 
 my $fpm = 'fpm';
@@ -97,6 +97,11 @@ $top = getcwd;
 $build_dir = $top . '/builds';
 $src = $build_dir. '/src.' . $hostname;
 $prefix = '/opt/puppet';
+
+# set git_revision
+chdir $top;
+my $git_revision = `git rev-parse --short HEAD`;
+chomp($git_revision);
 
 # sub routine to log to both a file and stdout
 sub logprint {
@@ -293,6 +298,7 @@ mkdir $build_dir, 0755 unless -d $build_dir;
 mkdir "${build_dir}/tgzs", 0755 unless -d "${build_dir}/tgzs";
 mkdir "${top}/packages", 0755 unless -d "${top}/packages";
 mkdir "${top}/packages/${ostype}", 0755 unless -d "${top}/packages/${ostype}";
+mkdir "${top}/packages/${ostype}/${git_revision}", 0755 unless -d "${top}/packages/${ostype}/${git_revision}";
 mkdir "${build_dir}/${src}", 0755 unless -d "${build_dir}/${src}";
 
 # fetch, extract, and build (not package)
@@ -351,12 +357,14 @@ ${fpm} -n ${fpm_name} \\
   --provides '${fpm_provides}' \\
   --maintainer '${fpm_maintainer}' \\
   --description '${fpm_description}' \\
+ --directories /opt/puppet \\
+ --directories /etc/puppet \\
+ --directories /var/lib/puppet \\
+ -p ${top}/packages/${ostype}/${git_revision}/ \\
   ${fpm_directories}
 EOM
 
     print "\n################### Packaging for ${pkgtype} with:\n$fpm_command\n";
     system $fpm_command;
-
-    system "mv eispuppet*.${pkgtype} ${top}/packages/${ostype}/";
   }
 }
