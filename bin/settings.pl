@@ -232,20 +232,21 @@ $target = $build_dir . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
   'CLASSES="none"',
 );
 
-$postinstall = <<EOT;
-#!/bin/sh
-
-if [ ! -f /etc/puppet/puppet.conf ] ; then
-  if [ ! -d /etc/puppet ] ; then
-    mkdir -p /etc/puppet
-    chown bin /etc/puppet
-    chgrp bin /etc/puppet
-    chmod 755 /etc/puppet
-  fi
-
-  mv /opt/puppet/puppet.conf /etc/puppet/puppet.conf
-fi
-EOT
+# GH: remove since using fpm_root
+#$postinstall = <<EOT;
+##!/bin/sh
+#
+#if [ ! -f /etc/puppet/puppet.conf ] ; then
+#  if [ ! -d /etc/puppet ] ; then
+#    mkdir -p /etc/puppet
+#    chown bin /etc/puppet
+#    chgrp bin /etc/puppet
+#    chmod 755 /etc/puppet
+#  fi
+#
+#  mv /opt/puppet/puppet.conf /etc/puppet/puppet.conf
+#fi
+#EOT
 
 if ($ostype eq 'solaris-9') {
   $postinstall .= <<EOT;
