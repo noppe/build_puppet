@@ -30,11 +30,7 @@ There are several reasons for this:
 * Suse 11 x86_64, i386 (Uses RedHat 6 packages)
 * Ubuntu 12.04 LTS x86_64
 
-# Prerequisites
-
-The following components are used.
-
-## Sources
+# Sources
 
     facter-1.7.1
     hiera-1.2.1
@@ -47,12 +43,16 @@ The following components are used.
     openssl-0.9.8w
     zlib-1.2.8
 
+# Prerequisites
+
+The following components are used.
+
 ## Tools
-    C compiler, usually gcc
-    make and gmake
-    perl
-    fpm
-    rpmbuild
+* C compiler, usually gcc
+* make and gmake
+* perl
+* fpm
+* rpmbuild
 
 ### Solaris 10 x86:
     /usr/sfw/bin/gcc 3.4.3, patched with http://www.openssl.org/~appro/values.c to get usable openssl libs
@@ -121,3 +121,10 @@ Everything else, uses FPM.
 * copies /opt/puppet to fpmtop/
 * copies fpmtop/init.d to fpmtop/etc/init.d
 * produces package
+
+# OS Notes
+## RedHat
+Setup build environment.
+
+    yum -y install rpm rpm-devel rpm-build gcc gcc-c++ automake autoconf libtool rubygems
+    gem install -V fpm --no-ri --no-rdoc

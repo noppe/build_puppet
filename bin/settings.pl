@@ -16,7 +16,7 @@ $zlib128 = {
   'pkgsrc'    => $top . '/tgzs/zlib-1.2.8.tar.gz',
   'srcdir'    => $top . '/' . $src . '/zlib-1.2.8',
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-  'configure' => './configure --prefix=' . $prefix,
+  'configure' => 'make clean; ./configure --prefix=' . $prefix,
   'make'      => 'make',
   'install'   => 'make install',
   'env'       => {
@@ -42,11 +42,11 @@ $openssl101e = {
 
 $libxml2291 = {
   'name'	=> 'libxml2-2.9.1',
-  'fetch'	=> 'wget https://git.gnome.org/browse/libxml2/snapshot/libxml2-2.9.1.tar.gz',
+  'fetch'	=> 'wget wget ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz',
   'pkgsrc'	=> $top . '/tgzs/libxml2-2.9.1.tar.gz',
   'srcdir'	=> "${top}/${src}/libxml2-2.9.1",
   'extract'    => "gunzip -c  %PKGSRC% | tar xvf - && cp -r ${top}/patches/libxml2/* ${srcdir}",
-  'configure' => "./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
+  'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
   'make'      => 'make',
   'install'   => 'make install',
   'env' => {
@@ -60,7 +60,7 @@ $libiconv114 = {
   'pkgsrc'    => $top . '/tgzs/libiconv-1.14.tar.gz',
   'srcdir'    => "${top}/${src}/libiconv-1.14",
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-  'configure' => "./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
+  'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
   'make'      => 'make',
   'install'   => 'make install',
   'env' => {
@@ -74,7 +74,7 @@ $ncurses59 = {
   'pkgsrc'    => $top . '/tgzs/ncurses-5.9.tar.gz',
   'srcdir'    => "${top}/${src}/ncurses-5.9",
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-  'configure'	=> "./configure --prefix=${prefix} --with-terminfo-dirs=/usr/share/lib/terminfo --enable-termcap CFLAGS=-fPIC LDFLAGS=-static-libgcc ",
+  'configure'	=> "make clean; ./configure --prefix=${prefix} --with-terminfo-dirs=/usr/share/lib/terminfo --enable-termcap CFLAGS=-fPIC LDFLAGS=-static-libgcc ",
   'make'	    => 'make',
   'install'   => 'make install',
   'env' => {
@@ -88,7 +88,7 @@ $ruby187p358 = {
   'pkgsrc'    => $top . '/tgzs/ruby-1.8.7-p358.tar.gz',
   'srcdir'    => "${top}/${src}/ruby-1.8.7-p358",
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-  'configure' => "./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
+  'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
   'make'      => 'make',
   'install'   => 'make install',
   'env' => {
@@ -105,7 +105,7 @@ $ruby193p448 = {
   'pkgsrc'    => $top . '/tgzs/ruby-1.9.3-p448.tar.gz',
   'srcdir'    => "${top}/${src}/ruby-1.9.3-p448",
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-  'configure' => "./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
+  'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
   'make'      => 'make',
   'install'   => 'make install',
   'env' => {
@@ -118,8 +118,8 @@ $readline62 = {
   'fetch'     => 'wget http://ftp.gnu.org/gnu/readline/readline-6.2.tar.gz',
   'pkgsrc'    => "${top}/tgzs/readline-6.2.tar.gz",
   'srcdir'    => "${top}/${src}/readline-6.2",
-  'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-  'configure' => "./configure --with-curses --prefix=${prefix} CFLAGS=-static-libgcc",
+  'extract'   => 'gunzip -c  %PKGSRC% | tar xvf -',
+  'configure' => "make clean; ./configure --with-curses --prefix=${prefix} CFLAGS=-static-libgcc",
   'make'      => 'make',
   'install'   => 'make install',
   'env' => {
@@ -132,8 +132,8 @@ $augeas110 = {
   'fetch'     => 'wget http://download.augeas.net/augeas-1.1.0.tar.gz',
   'pkgsrc'    => "${top}/tgzs/augeas-1.1.0.tar.gz",
   'srcdir'    => "${top}/${src}/augeas-1.1.0",
-  'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-  'configure' => "./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\"-L${prefix}/lib -R${prefix}/lib -lcurses\" CFLAGS=-static-libgcc",
+  'extract'   => 'gunzip -c  %PKGSRC% | tar xvf -',
+  'configure' => "make clean; ./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\"-L${prefix}/lib -R${prefix}/lib -lcurses\" CFLAGS=-static-libgcc",
   'make'      => 'gmake',
   'install'   => 'gmake install',
   'env' => {
@@ -148,7 +148,7 @@ $ruby_augeas050 = {
   'fetch'     => 'wget http://download.augeas.net/ruby/ruby-augeas-0.5.0.tgz',
   'pkgsrc'    => "${top}/tgzs/ruby-augeas-0.5.0.tgz",
   'srcdir'    => "${top}/${src}/ruby-augeas-0.5.0",
-  'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
+  'extract'   => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => "cd ext/augeas ; echo \"require 'mkmf' ; extension_name = '_augeas' ; create_makefile(extension_name)\" > ee2.rb ; ${prefix}/bin/ruby ee2.rb ; cd ../..",
   'make'      => "cd ext/augeas ; gmake CC=\"gcc -I${prefix}/include/libxml2 -laugeas\" ; cd ../..",
   'install'   => "cp lib/augeas.rb ${prefix}/lib/ruby/site_ruby/1.8 ; cd ext/augeas ; gmake install; ",

@@ -8,13 +8,24 @@ chop ($arch = `uname -p`);
 
 # Setup global varibales available later
 
+# Ensure basic paths are in environment. This way we do not have to know
+# exactly where binaries are on the different types of systems.
+$ENV{'PATH'} = "${ENV}{'PATH'}:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
+
 my $fpm = 'fpm';
 my ($os, $rev) = (`uname -s`, `uname -r`);
 chomp ($os, $rev);
+# if linux
 if ($os eq 'Linux') {
+  # if redhat
+  # sample redhat-release files
+  #   Red Hat Enterprise Linux Server release 5.9 (Tikanga)
+  #   Red Hat Enterprise Linux Server release 6.4 (Santiago)
+  #   CentOS release 6.4 (Final)
   if ( -f "/etc/redhat-release" ) {
     open FH, "/etc/redhat-release";
     $x = <FH> ; close FH;
+    # If this is a real Red Hat system
     if ($x =~ /^Red Hat/ ) {
       if ($x =~ /release\s+(\d+)\.(\d+)/) {
         $maj = $1;
@@ -22,13 +33,16 @@ if ($os eq 'Linux') {
         $rel = $maj . '.' . $min;
       }
       $platform_os = 'RedHat-' . $rel;
-      $ostype = 'redhat-' . $maj . '-compat';
+      $ostype = 'redhat-' . $maj;
+    # If this is a CentOS system
     } elsif ($x =~ /(\w+)\s+release\s+(\d+)\.(\d+)/ ) {
       $maj = $2 ; $min = $3;
+      # TODO: flavor is a hack to get Ubuntu to work and should be refactored.
       $flavor = $1 . "-" . $maj . '.' . $min;
       $platform_os = $flavor;
-      $ostype = 'redhat-' . $maj . '-compat';
+      $ostype = 'redhat-' . $maj;
     }
+  # if Suse
   } elsif ( -f "/etc/SuSE-release" ) {
     open FH, "/etc/SuSE-release";
     while (<FH>) {
@@ -36,23 +50,23 @@ if ($os eq 'Linux') {
       /^PATCHLEVEL\s*=\s*(\d+)$/ && { $min = $1 };
     }
     close FH;
-    $ostype = "redhat-" . ($maj > 9 ? "6" : "5") . '-compat';
-    $platform_os = "SuSE-$maj.$min";
+    $ostype = "redhat-" . ($maj > 9 ? "6" : "5");
+    $platform_os = "suse-$maj.$min";
+  # if Debian based
   } elsif ( -f '/etc/lsb-release' ) {
     open FH, '/etc/lsb-release';
     while (<FH>) {
       if (/DISTRIB_RELEASE=(\d+)\.(\d+)/) { $maj = $1 ; $min = $2  ; };
     }
     close FH;
-    $ostype = 'redhat-' . ($maj > 12 ? "6" : "5") . '-compat';
-    $platform_os = "Ubuntu-$maj.$min" ; # Wild guessing here. Fix!
-    $fpm = '/usr/local/bin/fpm';
+    $ostype = 'redhat-' . ($maj > 12 ? "6" : "5");
+    $platform_os = "ubuntu-$maj.$min" ; # Wild guessing here. Fix!
   } else {
     my $flavor = `uname -v`;
     chomp ($flavor);
     if ($flavor =~ /-(Ubuntu)/) {
       $platform_os = "$1-$rev";
-      $ostype = 'redhat-5-compat';
+      $ostype = 'redhat-5';
     } else {
       $platform_os = "$flavor-$rev";
     }
@@ -115,34 +129,34 @@ sub build {
   while (($k, $v) = each %{$p->{ 'env' }}) {
     $remember {$k} = $v;
     $ENV{$k} = $v;
-    logprint "setenv $k $v\n";
+    logprint "\n\nsetenv $ENV{$k} = $v\n";
   }
-  logprint "Configure: " . $p->{'configure'}, "\n";
 
+  logprint "\n\nConfigure: " . $p->{'configure'}, "\n";
   $cmd = expand ($p, 'configure');
   logprint "  Command: $cmd ";
   open (CMD, "$cmd |");
   while (<CMD>) {
     logprint $_;
-    print $_ if /fatal|error/i;
+    print $_;
   }
   close CMD;
 
-  logprint "make: " . $p->{'make'}, "\n";
+  logprint "\n\nmake: " . $p->{'make'}, "\n";
   $cmd = expand ($p, 'make');
   open (CMD, "$cmd |");
   while (<CMD>) {
     logprint $_;
-    print $_ if /fatal|error/i;
+    print $_;
   }
   close CMD;
 
-  logprint "Install: " . $p->{'install'}, "\n";
+  logprint "\n\nInstall: " . $p->{'install'}, "\n";
   $cmd = expand ($p, 'install');
   open (CMD, "$cmd |");
   while (<CMD>) {
     logprint $_;
-    print $_ if /fatal|error/i;
+    print $_;
   }
   close CMD;
 
@@ -267,14 +281,22 @@ mkdir 'tgzs', 0755 unless -d 'tgzs';
 mkdir 'packages', 0755 unless -d 'packages';
 mkdir $src, 0755 unless -d $src;
 
-# fetch, extract, and build (not package)
+# fetch all packages first
 foreach $name (@packages) {
   my $retval;
   $_ = ${$name};
   logprint $_->{'name'}, "\n";
-  print $_->{'name'}, "\n";
+  print "\n\n\n", $_->{'name'}, "\n\n";
   $retval = fetch ($_) unless -f $_->{'pkgsrc'};
   die ("Fetch returned $retval on package $name\n") if ($retval != 0);
+}
+
+# extract, and build (not package)
+foreach $name (@packages) {
+  my $retval;
+  $_ = ${$name};
+  logprint $_->{'name'}, "\n";
+  print "\n\n\n", $_->{'name'}, "\n\n";
   $retval = extract ($_) unless -d $_->{'srcdir'};
   die ("extract returned $retval on package $name\n") if ($retval != 0);
   chdir $_->{'srcdir'};
@@ -282,6 +304,7 @@ foreach $name (@packages) {
   chdir $top;
 }
 
+# Now we package
 if ($packit eq "yes") {
   if ($os =~ /solaris|sunos/i) {
     @pkgtype = ('solaris');
@@ -302,10 +325,10 @@ if ($packit eq "yes") {
     @pkgtype = ('rpm', 'deb');
     chdir 'fpmtop';
     foreach $pkgtype (@pkgtype) {
-      system "/bin/rm -rf opt/puppet ; cp -r /opt/puppet opt";
+      system "/bin/rm -rf opt/puppet ; cp -r ${prefix} opt";
       print "${fpm} -n eispuppet -v ${eis_puppet_version} -t ${pkgtype} -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt\n";
       system "${fpm} -n eispuppet -v ${eis_puppet_version} -t ${pkgtype} -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt";
-      system "mv eispuppet*.${pkgtype} ${ostype}";
+      system "mv eispuppet*.${pkgtype} ../packages/${ostype}";
     }
   }
 }

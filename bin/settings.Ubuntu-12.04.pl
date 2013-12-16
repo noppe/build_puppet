@@ -51,9 +51,9 @@ $augeas110 = {
 
 $ruby_augeas050 = {
     %{$ruby_augeas050},
-    'configure' => "cd ext/augeas ; ${prefix}/bin/ruby extconf.rb ; cd ../..",
-    'make'      => 'cd ext/augeas ; make ; cd ../..',
-    'install'   => "cp lib/augeas.rb ${prefix}/lib/ruby/site_ruby/1.8 ; cd ext/augeas ; make install",
+    'configure' => "cd ext/augeas && ${prefix}/bin/ruby extconf.rb ; cd ../..",
+    'make'      => 'cd ext/augeas && make ; cd ../..',
+    'install'   => "cp lib/augeas.rb ${prefix}/lib/ruby/site_ruby/1.8 && cd ext/augeas && make install",
 };
 
 $rubyshadow214 = {
