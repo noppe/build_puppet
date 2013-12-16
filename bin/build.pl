@@ -96,6 +96,7 @@ $platform = "${platform_os}-${platform_arch}";
 $top = getcwd;
 $build_dir = $top . '/builds';
 $src = $build_dir. '/src.' . $hostname;
+
 $prefix = '/opt/puppet';
 
 # set git_revision
@@ -311,8 +312,8 @@ unless (-d "${top}/packages/${ostype}") {
 unless (-d "${top}/packages/${ostype}/${git_revision}") {
   mkdir "${top}/packages/${ostype}/${git_revision}", 0755;
 }
-unless (-d "${build_dir}/${src}") {
-  mkdir "${build_dir}/${src}", 0755 ;
+unless (-d $src) {
+  mkdir $src, 0755 ;
 }
 
 # fetch, extract, and build (not package)
