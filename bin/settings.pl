@@ -13,8 +13,8 @@ $eis_puppet_version = '3.3.1-6' ;
 $zlib128 = {
   'name'      => 'zlib 1.2.8',
   'fetch'     => 'wget http://dfn.dl.sourceforge.net/project/libpng/zlib/1.2.8/zlib-1.2.8.tar.gz',
-  'pkgsrc'    => $top . '/tgzs/zlib-1.2.8.tar.gz',
-  'srcdir'    => $top . '/' . $src . '/zlib-1.2.8',
+  'pkgsrc'    => $build_dir . '/tgzs/zlib-1.2.8.tar.gz',
+  'srcdir'    => $src . '/zlib-1.2.8',
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => 'make clean; ./configure --prefix=' . $prefix,
   'make'      => 'make',
@@ -28,8 +28,8 @@ $zlib128 = {
 $openssl101e = {
   'name'      => 'openssl 1.0.1e',
   'fetch'     => 'wget http://www.openssl.org/source/openssl-1.0.1e.tar.gz',
-  'pkgsrc'    => $top . '/tgzs/openssl-1.0.1e.tar.gz',
-  'srcdir'    => $top . '/' . $src . '/openssl-1.0.1e',
+  'pkgsrc'    => $build_dir . '/tgzs/openssl-1.0.1e.tar.gz',
+  'srcdir'    => $src . '/openssl-1.0.1e',
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
   'make'      => 'make',
@@ -43,9 +43,9 @@ $openssl101e = {
 $libxml2291 = {
   'name'	=> 'libxml2-2.9.1',
   'fetch'	=> 'wget wget ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz',
-  'pkgsrc'	=> $top . '/tgzs/libxml2-2.9.1.tar.gz',
-  'srcdir'	=> "${top}/${src}/libxml2-2.9.1",
-  'extract'    => "gunzip -c  %PKGSRC% | tar xvf - && cp -r ${top}/patches/libxml2/* ${srcdir}",
+  'pkgsrc'	=> $build_dir . '/tgzs/libxml2-2.9.1.tar.gz',
+  'srcdir'	=> "${src}/libxml2-2.9.1",
+  'extract'    => "gunzip -c  %PKGSRC% | tar xvf -",
   'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
   'make'      => 'make',
   'install'   => 'make install',
@@ -57,8 +57,8 @@ $libxml2291 = {
 $libiconv114 = {
   'name'      => 'libiconv-1.14',
   'fetch'     => 'wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz',
-  'pkgsrc'    => $top . '/tgzs/libiconv-1.14.tar.gz',
-  'srcdir'    => "${top}/${src}/libiconv-1.14",
+  'pkgsrc'    => $build_dir . '/tgzs/libiconv-1.14.tar.gz',
+  'srcdir'    => "${src}/libiconv-1.14",
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
   'make'      => 'make',
@@ -71,8 +71,8 @@ $libiconv114 = {
 $ncurses59 = {
   'name'      => 'ncurses-5.9',
   'fetch'     => 'wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz',
-  'pkgsrc'    => $top . '/tgzs/ncurses-5.9.tar.gz',
-  'srcdir'    => "${top}/${src}/ncurses-5.9",
+  'pkgsrc'    => $build_dir . '/tgzs/ncurses-5.9.tar.gz',
+  'srcdir'    => "${src}/ncurses-5.9",
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure'	=> "make clean; ./configure --prefix=${prefix} --with-terminfo-dirs=/usr/share/lib/terminfo --enable-termcap CFLAGS=-fPIC LDFLAGS=-static-libgcc ",
   'make'	    => 'make',
@@ -85,8 +85,8 @@ $ncurses59 = {
 $ruby187p358 = {
   'name'      => 'ruby-1.8.7',
   'fetch'     => 'wget ftp://ftp.ruby-lang.org/pub/ruby/ruby-1.8.7-p358.tar.gz',
-  'pkgsrc'    => $top . '/tgzs/ruby-1.8.7-p358.tar.gz',
-  'srcdir'    => "${top}/${src}/ruby-1.8.7-p358",
+  'pkgsrc'    => $build_dir . '/tgzs/ruby-1.8.7-p358.tar.gz',
+  'srcdir'    => "${src}/ruby-1.8.7-p358",
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
   'make'      => 'make',
@@ -102,8 +102,8 @@ $ruby187p358 = {
 $ruby193p448 = {
   'name'      => 'ruby-1.9.3',
   'fetch'     => 'wget ftp://ftp.ruby-lang.org/pub/ruby/ruby-1.9.3-p448.tar.gz',
-  'pkgsrc'    => $top . '/tgzs/ruby-1.9.3-p448.tar.gz',
-  'srcdir'    => "${top}/${src}/ruby-1.9.3-p448",
+  'pkgsrc'    => $build_dir . '/tgzs/ruby-1.9.3-p448.tar.gz',
+  'srcdir'    => "${src}/ruby-1.9.3-p448",
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=\'-static-libgcc -L${prefix}/lib -R${prefix}/lib\' CPPFLAGS=-I${prefix}/include",
   'make'      => 'make',
@@ -116,8 +116,8 @@ $ruby193p448 = {
 $readline62 = {
   'name'      => 'Readline 6.2',
   'fetch'     => 'wget http://ftp.gnu.org/gnu/readline/readline-6.2.tar.gz',
-  'pkgsrc'    => "${top}/tgzs/readline-6.2.tar.gz",
-  'srcdir'    => "${top}/${src}/readline-6.2",
+  'pkgsrc'    => "${build_dir}/tgzs/readline-6.2.tar.gz",
+  'srcdir'    => "${src}/readline-6.2",
   'extract'   => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => "make clean; ./configure --with-curses --prefix=${prefix} CFLAGS=-static-libgcc",
   'make'      => 'make',
@@ -130,8 +130,8 @@ $readline62 = {
 $augeas110 = {
   'name'      => 'Augeas 1.1.0',
   'fetch'     => 'wget http://download.augeas.net/augeas-1.1.0.tar.gz',
-  'pkgsrc'    => "${top}/tgzs/augeas-1.1.0.tar.gz",
-  'srcdir'    => "${top}/${src}/augeas-1.1.0",
+  'pkgsrc'    => "${build_dir}/tgzs/augeas-1.1.0.tar.gz",
+  'srcdir'    => "${src}/augeas-1.1.0",
   'extract'   => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => "make clean; ./configure --prefix=${prefix} CPPFLAGS=-I${prefix}/include LDFLAGS=\"-L${prefix}/lib -R${prefix}/lib -lcurses\" CFLAGS=-static-libgcc",
   'make'      => 'gmake',
@@ -146,8 +146,8 @@ $augeas110 = {
 $ruby_augeas050 = {
   'name'      => 'Ruby-augeas 0.5.0',
   'fetch'     => 'wget http://download.augeas.net/ruby/ruby-augeas-0.5.0.tgz',
-  'pkgsrc'    => "${top}/tgzs/ruby-augeas-0.5.0.tgz",
-  'srcdir'    => "${top}/${src}/ruby-augeas-0.5.0",
+  'pkgsrc'    => "${build_dir}/tgzs/ruby-augeas-0.5.0.tgz",
+  'srcdir'    => "${src}/ruby-augeas-0.5.0",
   'extract'   => 'gunzip -c  %PKGSRC% | tar xvf -',
   'configure' => "cd ext/augeas ; echo \"require 'mkmf' ; extension_name = '_augeas' ; create_makefile(extension_name)\" > ee2.rb ; ${prefix}/bin/ruby ee2.rb ; cd ../..",
   'make'      => "cd ext/augeas ; gmake CC=\"gcc -I${prefix}/include/libxml2 -laugeas\" ; cd ../..",
@@ -161,10 +161,11 @@ $ruby_augeas050 = {
 
 $rubyshadow214 = {
   'name'      => 'ruby-shadow 2.1.4',
-  'fetch'     => 'git clone https://github.com/apalmblad/ruby-shadow.git ; cd ruby-shadow; git checkout 2.1.4',
-  'pkgsrc'    => $top . '/tgzs/ruby-shadow.tar.gz',
-  'srcdir'    => "${top}/${src}/ruby-shadow",
-  'extract'    => "cp -r ${top}/tgzs/ruby-shadow ${top}/${src}/ruby-shadow",
+  'fetch'     => 'git clone https://github.com/apalmblad/ruby-shadow.git && cd ruby-shadow && git checkout 2.1.4',
+  'pkgsrc'    => $build_dir . '/tgzs/ruby-shadow',
+  'srcdir'    => "${src}/ruby-shadow",
+#  'extract'    => "cp -r ${build_dir}/tgzs/ruby-shadow ${src}/ruby-shadow",
+  'extract'    => "rsync -avp ${build_dir}/tgzs/ruby-shadow/ ${src}/ruby-shadow/",
   'configure' => "${prefix}/bin/ruby extconf.rb",
   'make'      => 'gmake CC=\'gcc -static-libgcc\'',
   'install'   => 'gmake install',
@@ -177,8 +178,8 @@ $rubyshadow214 = {
 $facter173 = {
   'name'    => 'Facter 1.7.3',
   'fetch'   => 'wget http://downloads.puppetlabs.com/facter/facter-1.7.3.tar.gz',
-  'pkgsrc'  => $top . '/tgzs/facter-1.7.3.tar.gz',
-  'srcdir'  => "${top}/${src}/facter-1.7.3",
+  'pkgsrc'  => $build_dir . '/tgzs/facter-1.7.3.tar.gz',
+  'srcdir'  => "${src}/facter-1.7.3",
   'extract' => 'gunzip -c  %PKGSRC% | tar xf -',
   'install' => "${prefix}/bin/ruby install.rb",
 };
@@ -186,8 +187,8 @@ $facter173 = {
 $hiera121 = {
   'name'    => 'Hiera 1.2.1',
   'fetch'   => 'wget http://downloads.puppetlabs.com/hiera/hiera-1.2.1.tar.gz',
-  'pkgsrc'  => $top . '/tgzs/hiera-1.2.1.tar.gz',
-  'srcdir'  => "${top}/${src}/hiera-1.2.1",
+  'pkgsrc'  => $build_dir . '/tgzs/hiera-1.2.1.tar.gz',
+  'srcdir'  => "${src}/hiera-1.2.1",
   'extract' => "gunzip -c %PKGSRC% | tar xf -",
   'install' => "test -f install.rb || cp ${top}/patches/hiera/install.rb . ; ${prefix}/bin/ruby install.rb --no-configs",
 };
@@ -195,8 +196,8 @@ $hiera121 = {
 $puppet331 = {
   'name'    => 'Puppet 3.3.1',
   'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.1.tar.gz',
-  'pkgsrc'  => $top . '/tgzs/puppet-3.3.1.tar.gz',
-  'srcdir'  => "${top}/${src}/puppet-3.3.1",
+  'pkgsrc'  => $build_dir . '/tgzs/puppet-3.3.1.tar.gz',
+  'srcdir'  => "${src}/puppet-3.3.1",
   'extract' => 'gunzip -c  %PKGSRC% | tar xvf -',
   'install' => "${prefix}/bin/ruby install.rb --no-configs",
 };
@@ -216,7 +217,7 @@ $puppet331 = {
   puppet331
 /;
 
-$target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
+$target = $build_dir . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
 
 @pkginfo = (
   'PKG="EISpuppet"',

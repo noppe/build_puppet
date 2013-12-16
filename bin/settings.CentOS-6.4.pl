@@ -8,8 +8,8 @@ if ($bits =~ /i686/) {
 $libxml2291 = {
   'name'      => 'libxml2-2.9.1',
   'fetch'     => 'wget ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz',
-  'pkgsrc'    => $top . '/tgzs/libxml2-2.9.1.tar.gz',
-  'srcdir'    => "${top}/${src}/libxml2-2.9.1",
+  'pkgsrc'    => $build_dir . '/tgzs/libxml2-2.9.1.tar.gz',
+  'srcdir'    => "${src}/libxml2-2.9.1",
   'extract'   => 'gunzip -c  %PKGSRC% | tar xvf - ',
   'configure' => "make clean; ./configure --prefix=${prefix} LDFLAGS=-static-libgcc --without-python",
   'make'      => 'make',

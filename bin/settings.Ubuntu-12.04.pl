@@ -31,8 +31,8 @@ $ruby187p358 = {
 $ncurses59 = {
     'name'      => 'Ncurses 5.9',
     'fetch'     => 'wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz',
-    'pkgsrc'    => "${top}/tgzs/ncurses-5.9.tar.gz",
-    'srcdir'    => "${top}/${src}/ncurses-5.9",
+    'pkgsrc'    => "${build_dir}/tgzs/ncurses-5.9.tar.gz",
+    'srcdir'    => "${src}/ncurses-5.9",
     'extract'   => 'gunzip -c  %PKGSRC% | tar xvf -',
     'configure' => "./configure --with-pc-files --with-shared --prefix=${prefix} LDFLAGS='-static-libgcc -L${prefix}/lib -Wl,-rpath,${prefix}/lib' CFLAGS=-static-libgcc",
     'make'      => 'make',

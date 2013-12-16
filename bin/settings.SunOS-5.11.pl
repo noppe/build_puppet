@@ -2,7 +2,7 @@
 # Solaris 11 settings
 #
 
-require "${top}/bin/settings.SunOS-5.10.pl";
+require "${build_dir}/bin/settings.SunOS-5.10.pl";
 
 $augeas110 = {
     %{$augeas110},

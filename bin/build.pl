@@ -82,8 +82,9 @@ my $arch = `uname -p`;
 chomp $arch;
 $platform_arch = $arch;
 $platform = "${platform_os}-${platform_arch}";
-$src = 'src.' . $hostname;
 $top = getcwd;
+$build_dir = $top . '/builds';
+$src = $build_dir. '/src.' . $hostname;
 $prefix = '/opt/puppet';
 
 # sub routine to log to both a file and stdout
@@ -105,7 +106,6 @@ sub extract {
   }
   close UNPACK_COMMAND_PIPE;
   $retval = $?;
-  chdir $top;
   return($retval);
 }
 
@@ -212,7 +212,7 @@ sub fetch {
   my $p = shift;
   my $cmd = $p->{'fetch'};
   my $retval;
-  chdir "${top}/tgzs";
+  chdir "${build_dir}/tgzs";
   open (FETCH, "$cmd |") || die "Fetching " . $p->{'name'} . " failed";
   while (defined <FETCH>) {
     logprint $_;
@@ -227,17 +227,18 @@ $dump = 0;
 $err = 'ignore';
 $packit = "yes";
 GetOptions (
-  'top=s'      => \$top,
-  'error=s'    => \$err,
-  'prefix=s'   => \$prefix,
-  'packages=s' => \@pac,
-  'wrapit=s'   => \$packit,
-  'dump'       => \$dump
+  'top=s'       => \$top,
+  'build_dir=s' => \$build_dir,
+  'error=s'     => \$err,
+  'prefix=s'    => \$prefix,
+  'packages=s'  => \@pac,
+  'wrapit=s'    => \$packit,
+  'dump'        => \$dump
 );
 
-mkdir "${top}/logs", 0755 unless -d "${top}/logs";
-open (LOG1, "> ${top}/logs/build.${hostname}-$$");
-open (LOG2, "> ${top}/logs/latest");
+mkdir "${build_dir}/logs", 0755 unless -d "${build_dir}/logs";
+open (LOG1, "> ${build_dir}/logs/build.${hostname}-$$");
+open (LOG2, "> ${build_dir}/logs/latest");
 
 logprint "Main settings\n";
 require "${top}/bin/settings.pl";
@@ -277,31 +278,27 @@ if ($dump) {
 }
 
 chdir $top;
-mkdir 'tgzs', 0755 unless -d 'tgzs';
-mkdir 'packages', 0755 unless -d 'packages';
-mkdir $src, 0755 unless -d $src;
+mkdir $build_dir, 0755 unless -d $build_dir;
+mkdir "${build_dir}/tgzs", 0755 unless -d "${build_dir}/tgzs";
+mkdir "${top}/packages", 0755 unless -d "${top}/packages";
+mkdir "${top}/packages/${ostype}", 0755 unless -d "${top}/packages/${ostype}";
+mkdir "${build_dir}/${src}", 0755 unless -d "${build_dir}/${src}";
 
-# fetch all packages first
+# fetch, extract, and build (not package)
 foreach $name (@packages) {
+  chdir $build_dir;
   my $retval;
   $_ = ${$name};
   logprint $_->{'name'}, "\n";
-  print "\n\n\n", $_->{'name'}, "\n\n";
-  $retval = fetch ($_) unless -f $_->{'pkgsrc'};
-  die ("Fetch returned $retval on package $name\n") if ($retval != 0);
-}
-
-# extract, and build (not package)
-foreach $name (@packages) {
-  my $retval;
-  $_ = ${$name};
-  logprint $_->{'name'}, "\n";
-  print "\n\n\n", $_->{'name'}, "\n\n";
+  print "\n################### Fetching: ", $_->{'name'}, "\n";
+  $retval = fetch ($_) unless -e $_->{'pkgsrc'};
+  print "\n################### Extracting: ", $_->{'name'}, "\n";
+  print "srcdir = $_->{'srcdir'}\n";
   $retval = extract ($_) unless -d $_->{'srcdir'};
   die ("extract returned $retval on package $name\n") if ($retval != 0);
   chdir $_->{'srcdir'};
+  print "\n################### Building: ", $_->{'name'}, "\n";
   build ($_);
-  chdir $top;
 }
 
 # Now we package
@@ -323,12 +320,12 @@ if ($packit eq "yes") {
     # TODO: creates both rpm's and deb's indifferent to linux type. Should fix
     # so that it creates the correct package type for the system
     @pkgtype = ('rpm', 'deb');
-    chdir 'fpmtop';
+    chdir "${top}/fpmtop";
     foreach $pkgtype (@pkgtype) {
       system "/bin/rm -rf opt/puppet ; cp -r ${prefix} opt";
       print "${fpm} -n eispuppet -v ${eis_puppet_version} -t ${pkgtype} -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt\n";
       system "${fpm} -n eispuppet -v ${eis_puppet_version} -t ${pkgtype} -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt";
-      system "mv eispuppet*.${pkgtype} ../packages/${ostype}";
+      system "mv eispuppet*.${pkgtype} ${top}/packages/${ostype}/";
     }
   }
 }

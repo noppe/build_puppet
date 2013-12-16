@@ -92,25 +92,29 @@ Default settings
 ### settings.<platform>.pl
 Settings specific to that platform
 
-## fpmtop/
+## builds/
+Directory where builds take place. Ignored by git
 
-## logs/
+### builds/logs/
 Logs to both of these files.
 
     logs/build.$hostname-<pid>
     logs/latest
 
-## patches/
-Patches to source code
-
-## src.<hostname>/
+### builds/src.<hostname>/
 Packages are extracted and built here, under `<package_name>/`
 
-## tgzs/
+### builds/tgzs/
 Packages are downloaded here.
+
+## fpmtop/
 
 ## packages/
 Where built packages end up.
+
+## patches/
+Patches to source code
+
 
 # Packaging
 Solaris builds its own packages without FPM

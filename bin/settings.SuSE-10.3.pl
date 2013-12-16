@@ -1,3 +1,3 @@
-require "${top}/bin/settings.CentOS-6.4.pl";
+require "${build_dir}/bin/settings.CentOS-6.4.pl";
 
 1;
