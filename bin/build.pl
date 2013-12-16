@@ -192,21 +192,6 @@ sub packit {
     system "cd /var/spool/pkg ; pkgtrans -s /var/spool/pkg ${target} EISpuppet" ;
 }
 
-sub rpmit {
-    open (CTRL, "> /tmp/puppet.spec") ;
-    print CTRL join ("\n", @rpminfo), "\n" ;
-    close CTRL ;
-
-    system "rpmbuild --define \"_rpmdir /tmp\" --buildroot=$top -bb /tmp/puppet.spec" ;
-}
-
-sub debit {
-    mkdir "${prefix}/DEBIAN", 0755 unless -d "${prefix}/DEBIAN" ;
-    open (CTRL, "> ${prefix}/DEBIAN/control") ;
-    print CTRL join ("\n", @debinfo), "\n" ;
-    close CTRL ;
-}
-
 sub fetch {
     my $p = shift ;
     my $cmd = $p->{'fetch'} ;

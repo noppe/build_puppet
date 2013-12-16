@@ -231,33 +231,6 @@ $target = $top . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
   'CLASSES="none"',
 );
 
-@debinfo = (
-  'Package: eis-puppet',
-  'Version: ' . $eis_puppet_version,
-  'Architecture: ' . ($platform_arch == "x86_64" ? "amd64" : $platform_arch),
-  'Priority: optional',
-  'Section: base',
-  'Depends:',
-  'Maintainer: nils.olof.xo.paulsson@ericsson.com',
-  'Description: This is EIS CM puppet',
-);
-
-@rpminfo = (
-  'Name: eis-puppet',
-  'Version: ' . $eis_puppet_version,
-  'Release: ' . $eis_puppet_version,
-  'Licence: GPL',
-  'Summary: EIS Puppet standalone package including tools and libs',
-  'Group: Applications/System',
-  'Buildroot: ' . ${top},
-  '',
-  '%description',
-  'This package includes ' . join (", ", @packages),
-  '',
-  '%files',
-  '/opt/puppet',
-);
-
 $postinstall = <<EOT;
 #!/bin/sh
 
@@ -290,14 +263,15 @@ if [ ! -f /etc/init.d/puppetd ] ; then
   cp /opt/puppet/puppetd /etc/init.d/puppetd
   chmod +x /etc/init.d/puppetd
 fi
-#if [ ! -f /var/svc/manifest/network/puppetd.xml -a ! -f /lib/svc/method/svc-puppetd ] ; then
-#  cp /opt/puppet/puppetd.xml /var/svc/manifest/network/puppetd.xml
-#  cp /opt/puppet/svc-puppetd /lib/svc/method/svc-puppetd
-#  svccfg validate /var/svc/manifest/network/puppetd.xml
-#  svccfg import /var/svc/manifest/network/puppetd.xml
-#  chmod +x /lib/svc/method/svc-puppetd
-#fi
+# TODO: This part is not working as expected
+if [ ! -f /var/svc/manifest/network/puppetd.xml -a ! -f /lib/svc/method/svc-puppetd ] ; then
+  cp /opt/puppet/puppetd.xml /var/svc/manifest/network/puppetd.xml
+  cp /opt/puppet/svc-puppetd /lib/svc/method/svc-puppetd
+  svccfg validate /var/svc/manifest/network/puppetd.xml
+  svccfg import /var/svc/manifest/network/puppetd.xml
+  chmod +x /lib/svc/method/svc-puppetd
+fi
 EOT
 }
 
-1 ;
+1;
