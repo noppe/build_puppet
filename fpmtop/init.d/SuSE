@@ -33,9 +33,9 @@
 #      rc_exit          exit appropriate to overall rc status
 [ -f /etc/rc.status ] && . /etc/rc.status
 [ -f /etc/sysconfig/puppet ] && . /etc/sysconfig/puppet
-lockfile=${LOCKFILE-/var/lock/subsys/puppet}
-pidfile=${PIDFILE-/var/run/puppet/agent.pid}
-puppetd=${PUPPETD-/usr/bin/puppet}
+lockfile=/var/lock/subsys/puppet
+pidfile=/var/run/puppet/agent.pid
+puppetd=/opt/puppet/bin/puppet
 RETVAL=0
 
 PUPPET_OPTS="agent"

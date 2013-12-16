@@ -168,7 +168,7 @@ sub packit {
 
     logprint $name, " ",  $group, "\n" ;
 
-    grep ( { s/\b$name\b/bin/g ; s/\b$group\b/bin/g } @proto ) ;
+    grep ( { s/(\s+)$name(\s+)/${1}bin${2}/g ; s/(\s+)$group(\s+)/${1}bin${2}/g } @proto ) ;
 
     unshift @proto, ("d none /etc/puppet 0755 bin bin\n",
          "d none /opt/puppet 0755 bin bin\n",
@@ -296,8 +296,14 @@ foreach $name (@packages) {
 if ($packit eq "yes") {
   if ($os =~ /solaris|sunos/i) {
     @pkgtype = ('solaris') ;
+    system "cp ${top}/fpmtop/etc/puppet/puppet.conf ${prefix}" ;
     if ($ostype eq 'solaris-9') {
       system "cp ${top}/fpmtop/init.d/Solaris/puppetd ${prefix}/puppetd" ;
+    }
+    if ($ostype eq 'solaris-10') {
+      system "cp ${top}/fpmtop/init.d/Solaris/puppetd ${prefix}/puppetd" ;
+    ##  system "cp ${top}/fpmtop/init.d/Solaris/smf/puppetd.xml ${prefix}/puppetd.xml" ;
+    ##  system "cp ${top}/fpmtop/init.d/Solaris/smf/svc-puppetd ${prefix}/svc-puppetd" ;
     }
     ##  system "cp ${top}/fpmtop/init.d/Solaris/smf/puppetd.xml ${top}/fpmtop/
     packit ;

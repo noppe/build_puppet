@@ -7,10 +7,11 @@
 
 . /lib/svc/share/smf_include.sh
 
-prefix=/opt/csw
-exec_prefix=/opt/csw
-sysconfdir=/opt/csw/etc
-sbindir=/opt/csw/sbin
+prefix=/opt/puppet
+exec_prefix=/opt/puppet
+sysconfdir=/opt/puppet/etc
+sbindir=/opt/puppet/bin
+options=''
 
 pidfile=/var/lib/puppet/run/agent.pid
 
@@ -21,7 +22,8 @@ start)
 
     printf "Starting Puppet client services:"
 
-    /opt/csw/sbin/puppetd
+    #/opt/csw/sbin/puppetd
+    $sbindir/puppet agent $options
 
     printf " puppetd"
     echo ""

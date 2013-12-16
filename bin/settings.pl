@@ -2,7 +2,7 @@
 #
 #
 
-$eis_puppet_version = '3.3.1-e4' ;
+$eis_puppet_version = '3.3.1-6' ;
 
 %pathmap = (
       'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin:/usr/sfw/bin",
@@ -275,48 +275,7 @@ if [ ! -f /etc/puppet/puppet.conf ] ; then
     chmod 755 /etc/puppet
   fi
 
-  cat > /etc/puppet/puppet.conf <<EOF
-
-# This is a template file for puppet
-# EDIT at least all lines with server names
-
-[main]
-    # The Puppet log directory.
-    # The default value is '$vardir/log'.
-    logdir = /var/log/puppet
-
-    # Where Puppet PID files are kept.
-    # The default value is '$vardir/run'.
-    rundir = /var/run/puppet
-
-    # Where SSL certificates are kept.
-    # The default value is '$confdir/ssl'.
-    ssldir = $vardir/ssl
-
-    archive_files = true
-    archive_file_server = puppet.rnd.ericsson.se
-
-[agent]
-    # The file in which puppetd stores a list of the classes
-    # associated with the retrieved configuratiion.  Can be loaded in
-    # the separate ''puppet'' executable using the ''--loadclasses''
-    # option.
-    # The default value is '$confdir/classes.txt'.
-    classfile = $vardir/classes.txt
-
-    # Where puppetd caches the local configuration.  An
-    # extension indicating the cache format is added automatically.
-    # The default value is '$confdir/localconfig'.
-    localconfig = $vardir/localconfig
-    report = true
-    graph = true
-    pluginsync = true
-    # Insert server names below. For example:
-    #     server = puppet.rnd.ericsson.se
-    #     ca_server = puppetca.rnd.ericsson.se
-
-EOF
-
+  mv /opt/puppet/puppet.conf /etc/puppet/puppet.conf
 fi
 EOT
 
@@ -326,6 +285,21 @@ if [ ! -f /etc/init.d/puppetd ] ; then
   cp /opt/puppet/puppetd /etc/init.d/puppetd
   chmod +x /etc/init.d/puppetd
 fi
+EOT
+}
+elsif ($ostype eq 'solaris-10') {
+  $postinstall .= <<EOT;
+if [ ! -f /etc/init.d/puppetd ] ; then
+  cp /opt/puppet/puppetd /etc/init.d/puppetd
+  chmod +x /etc/init.d/puppetd
+fi
+#if [ ! -f /var/svc/manifest/network/puppetd.xml -a ! -f /lib/svc/method/svc-puppetd ] ; then
+#  cp /opt/puppet/puppetd.xml /var/svc/manifest/network/puppetd.xml
+#  cp /opt/puppet/svc-puppetd /lib/svc/method/svc-puppetd
+#  svccfg validate /var/svc/manifest/network/puppetd.xml
+#  svccfg import /var/svc/manifest/network/puppetd.xml
+#  chmod +x /lib/svc/method/svc-puppetd
+#fi
 EOT
 }
 
