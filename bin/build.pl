@@ -252,7 +252,9 @@ GetOptions (
   'dump'        => \$dump
 );
 
-mkdir "${build_dir}/logs", 0755 unless -d "${build_dir}/logs";
+unless (-d "${build_dir}/logs") {
+  mkdir "${build_dir}/logs", 0755;
+}
 open (LOG1, "> ${build_dir}/logs/build.${hostname}-$$");
 open (LOG2, "> ${build_dir}/logs/latest");
 
@@ -294,12 +296,24 @@ if ($dump) {
 }
 
 chdir $top;
-mkdir $build_dir, 0755 unless -d $build_dir;
-mkdir "${build_dir}/tgzs", 0755 unless -d "${build_dir}/tgzs";
-mkdir "${top}/packages", 0755 unless -d "${top}/packages";
-mkdir "${top}/packages/${ostype}", 0755 unless -d "${top}/packages/${ostype}";
-mkdir "${top}/packages/${ostype}/${git_revision}", 0755 unless -d "${top}/packages/${ostype}/${git_revision}";
-mkdir "${build_dir}/${src}", 0755 unless -d "${build_dir}/${src}";
+unless (-d $build_dir) {
+  mkdir $build_dir, 0755 ;
+}
+unless (-d "${build_dir}/tgzs") {
+  mkdir "${build_dir}/tgzs", 0755 ;
+}
+unless (-d "${top}/packages") {
+  mkdir "${top}/packages", 0755 ;
+}
+unless (-d "${top}/packages/${ostype}") {
+  mkdir "${top}/packages/${ostype}", 0755;
+}
+unless (-d "${top}/packages/${ostype}/${git_revision}") {
+  mkdir "${top}/packages/${ostype}/${git_revision}", 0755;
+}
+unless (-d "${build_dir}/${src}") {
+  mkdir "${build_dir}/${src}", 0755 ;
+}
 
 # fetch, extract, and build (not package)
 foreach $name (@packages) {
