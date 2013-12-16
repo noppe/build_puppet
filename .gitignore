@@ -8,6 +8,31 @@
 /fpmtop/*/*rpm
 /fpmtop/*/*deb
 /fpmtop/opt/puppet
+*.tar
+*.gz
+*.bz2
 
 # Vim
 *.swp
+
+# OSX
+.DS_Store
+
+# Object files
+*.o
+*.ko
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app

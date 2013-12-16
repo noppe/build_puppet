@@ -25,16 +25,12 @@ There are several reasons for this:
 * Solaris 9 sparc
 * Solaris 10 x86_64, sparc
 * Solaris 11.1 x86_64, sparc
-* Suse 9 x86_64, i386
-* Suse 10 x86_64, i386
-* Suse 11 x86_64, i386
+* Suse 9 x86_64, i386 (Uses RedHat 5 packages)
+* Suse 10 x86_64, i386 (Uses RedHat 5 packages)
+* Suse 11 x86_64, i386 (Uses RedHat 6 packages)
 * Ubuntu 12.04 LTS x86_64
 
-# Prerequisites
-
-The following components are used.
-
-## Sources
+# Sources
 
     facter-1.7.1
     hiera-1.2.1
@@ -47,12 +43,16 @@ The following components are used.
     openssl-0.9.8w
     zlib-1.2.8
 
+# Prerequisites
+
+The following components are used.
+
 ## Tools
-    C compiler, usually gcc
-    make and gmake
-    perl
-    fpm
-    rpmbuild
+* C compiler, usually gcc
+* make and gmake
+* perl
+* fpm
+* rpmbuild
 
 ### Solaris 10 x86:
     /usr/sfw/bin/gcc 3.4.3, patched with http://www.openssl.org/~appro/values.c to get usable openssl libs
@@ -69,6 +69,15 @@ build.pl will auto detect the system that you are on and build for it.
 
     ./bin/build.pl -wrap no
 
+## To build specific packages
+This would build only zlib and openssl. Notice the names match the variables from settings.pl
+
+    ./bin/build.pl -packages zlib128,openssl101e
+
+# Dump variables without building. Useful for debugging.
+
+    ./bin/build.pl -dump
+
 # repo layout
 
 ## bin/
@@ -83,10 +92,29 @@ Default settings
 ### settings.<platform>.pl
 Settings specific to that platform
 
+## builds/
+Directory where builds take place. Ignored by git
+
+### builds/logs/
+Logs to both of these files.
+
+    logs/build.$hostname-<pid>
+    logs/latest
+
+### builds/src.<hostname>/
+Packages are extracted and built here, under `<package_name>/`
+
+### builds/tgzs/
+Packages are downloaded here.
+
 ## fpmtop/
+
+## packages/
+Where built packages end up.
 
 ## patches/
 Patches to source code
+
 
 # Packaging
 Solaris builds its own packages without FPM
@@ -97,3 +125,10 @@ Everything else, uses FPM.
 * copies /opt/puppet to fpmtop/
 * copies fpmtop/init.d to fpmtop/etc/init.d
 * produces package
+
+# OS Notes
+## RedHat
+Setup build environment.
+
+    yum -y install rpm rpm-devel rpm-build gcc gcc-c++ automake autoconf libtool rubygems
+    gem install -V fpm --no-ri --no-rdoc
