@@ -2,36 +2,33 @@
 
 Guide to building Puppet agents.
 
-# About
-
+# Why build?
 
 Since any reasonable modern OS have puppet in the standard repositories, why do we build the puppet software ourselves?
 
 There are several reasons for this:
 
-- Ruby depends on dynamically loaded libraries, for example zlib and openssl. By including these into the EIS puppet package we eliminate the risk of an OS patch to break puppet
+* Ruby depends on dynamically loaded libraries, for example zlib and openssl. By including these into the EIS puppet package we eliminate the risk of an OS patch to break puppet
 
-- Some OSes in EIS scope does not provide puppet at all, or an older version. We can build EIS puppet for these
+* Some OSes in EIS scope does not provide puppet at all, or an older version. We can build EIS puppet for these
 
-- We get the same version of puppet on all EIS managed servers, implying that we can use the same puppet language features for all clients
+* We get the same version of puppet on all EIS managed servers, implying that we can use the same puppet language features for all clients
 
-- The EIS puppet package installs in /opt/puppet, thus it is possible to have the OS puppet package installed simultaneously
+* The EIS puppet package installs in /opt/puppet, thus it is possible to have the OS puppet package installed simultaneously
 
-- A tailor-made package fits our requirements better
+* A tailor-made package fits our requirements better
 
 # Supported Distributions
 
-    * Solaris 11.1 sparc
-    * Solaris 11.1 x86
-    * Solaris 10 sparc
-    * Solaris 10 x86
-    * Solaris 9 sparc
-    * Openindiana 5.11 oi_151a7 x86
-    * Ubuntu 12.04 LTS
-    * RedHat 5-series and correspondin CentOS, x86
-    * RedHat 6-series and correspondin CentOS, x86
-    * SuSE 10
-    * SuSE 11
+* RedHat 5 x86_64, i386
+* RedHat 6 x86_64, i386
+* Solaris 9 sparc
+* Solaris 10 x86_64, sparc
+* Solaris 11.1 x86_64, sparc
+* Suse 9 x86_64, i386
+* Suse 10 x86_64, i386
+* Suse 11 x86_64, i386
+* Ubuntu 12.04 LTS x86_64
 
 # Prerequisites
 
@@ -64,15 +61,39 @@ The following components are used.
     /usr/sfw/bin/gcc 3.4.3
 
 # Build Instructions
-***Add here!***
+build.pl will auto detect the system that you are on and build for it.
 
-## Notes on building components
+    ./bin/build.pl
 
-### Augeas
+## To build without packaging
 
-Add <pre>"-lncurses"</pre> to CFLAGS in configure statement. Otherwise build will fail with "Could not find a working readline library"
+    ./bin/build.pl -wrap no
 
-### RedHat
+# repo layout
 
-       Install "libxml2" on Redhat flavors.
+## bin/
+scripts
 
+### build.pl
+main script that you run
+
+### settings.pl
+Default settings
+
+### settings.<platform>.pl
+Settings specific to that platform
+
+## fpmtop/
+
+## patches/
+Patches to source code
+
+# Packaging
+Solaris builds its own packages without FPM
+
+Everything else, uses FPM.
+
+* build.pl builds everything in /opt/puppet
+* copies /opt/puppet to fpmtop/
+* copies fpmtop/init.d to fpmtop/etc/init.d
+* produces package
