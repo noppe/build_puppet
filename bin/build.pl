@@ -21,7 +21,17 @@ my $fpm_provides = 'eis_cm';
 my $fpm_maintainer = 'nils.olof.xo.paulsson@ericsson.com';
 my $fpm_description = 'EIS CM puppet client';
 # directories that FPM will use in which to create package. Space separated string.
-my $fpm_directories = 'var etc opt';
+my $fpm_root = '/usr/local/src/eispuppet';
+
+# directories which should exist under fpm_root
+my $fpm_dirs = 'var opt etc';
+
+# build dir structure for fpm
+unless (-d $fpm_root) {
+  mkdir $fpm_root, 0755 ;
+}
+system "for i in lib log run; do mkdir -p ${fpm_root}/var/\$i/puppet; done";
+system "for i in opt/puppet etc/puppet; do mkdir -p ${fpm_root}/\$i; done";
 
 my $fpm = 'fpm';
 my ($os, $rev) = (`uname -s`, `uname -r`);
@@ -96,8 +106,7 @@ $platform = "${platform_os}-${platform_arch}";
 $top = getcwd;
 $build_dir = $top . '/builds';
 $src = $build_dir. '/src.' . $hostname;
-
-$prefix = '/opt/puppet';
+$prefix = $fpm_root . '/opt/puppet';
 
 # set git_revision
 chdir $top;
@@ -358,13 +367,14 @@ if ($packit eq "yes") {
       $pkgtype = 'rpm';
     }
 
-    chdir "${top}/fpmtop";
-    system "/bin/rm -rf opt/puppet ; cp -r ${prefix} opt";
+    system "rsync -avp ${top}/fpmtop/etc/ ${fpm_root}/etc/";
+    chdir $fpm_root;
 
     $fpm_command = <<EOM;
 ${fpm} -n ${fpm_name} \\
   -v ${eis_puppet_version} \\
   -t ${pkgtype} \\
+  -C ${fpm_root} \\
   -s dir \\
   --url '${fpm_url}' \\
   --vendor '${fpm_vendor}' \\
@@ -376,7 +386,7 @@ ${fpm} -n ${fpm_name} \\
  --directories /etc/puppet \\
  --directories /var/lib/puppet \\
  -p ${top}/packages/${ostype}/${git_revision}/ \\
-  ${fpm_directories}
+ $fpm_dirs
 EOM
 
     print "\n################### Packaging for ${pkgtype} with:\n$fpm_command\n";
