@@ -25,9 +25,9 @@ There are several reasons for this:
 * Solaris 9 sparc
 * Solaris 10 x86_64, sparc
 * Solaris 11.1 x86_64, sparc
-* Suse 9 x86_64, i386
-* Suse 10 x86_64, i386
-* Suse 11 x86_64, i386
+* Suse 9 x86_64, i386 (Uses RedHat 5 packages)
+* Suse 10 x86_64, i386 (Uses RedHat 5 packages)
+* Suse 11 x86_64, i386 (Uses RedHat 6 packages)
 * Ubuntu 12.04 LTS x86_64
 
 # Prerequisites
@@ -69,6 +69,15 @@ build.pl will auto detect the system that you are on and build for it.
 
     ./bin/build.pl -wrap no
 
+## To build specific packages
+This would build only zlib and openssl. Notice the names match the variables from settings.pl
+
+    ./bin/build.pl -packages zlib128,openssl101e
+
+# Dump variables without building. Useful for debugging.
+
+    ./bin/build.pl -dump
+
 # repo layout
 
 ## bin/
@@ -85,8 +94,23 @@ Settings specific to that platform
 
 ## fpmtop/
 
+## logs/
+Logs to both of these files.
+
+    logs/build.$hostname-<pid>
+    logs/latest
+
 ## patches/
 Patches to source code
+
+## src.<hostname>/
+Packages are extracted and built here, under `<package_name>/`
+
+## tgzs/
+Packages are downloaded here.
+
+## packages/
+Where built packages end up.
 
 # Packaging
 Solaris builds its own packages without FPM

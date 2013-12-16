@@ -5,7 +5,7 @@ $libxml2291 = {
   'fetch'     => 'wget https://git.gnome.org/browse/libxml2/snapshot/libxml2-2.9.1.tar.gz',
   'pkgsrc'    => $top . '/tgzs/libxml2-fix.tar.gz',
   'srcdir'    => "${top}/${src}/libxml2-2.9.1",
-  'packup'    => "gunzip -c  %PKGSRC% | tar xvf - ",
+  'extract'   => "gunzip -c  %PKGSRC% | tar xvf - ",
   'configure' => "./configure --prefix=${prefix} LDFLAGS=-static-libgcc ",
   'make'      => 'make',
   'install'   => 'make install',
