@@ -12,6 +12,17 @@ chop ($arch = `uname -p`);
 # exactly where binaries are on the different types of systems.
 $ENV{'PATH'} = "${ENV}{'PATH'}:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
 
+# used in FPM
+my $fpm_name = 'eispuppet';
+my $fpm_url = 'https://github.com/noppe/build_puppet';
+my $fpm_vendor = 'EIS';
+my $fpm_category = 'eis_cm';
+my $fpm_provides = 'eis_cm';
+my $fpm_maintainer = 'nils.olof.xo.paulsson@ericsson.com';
+my $fpm_description = 'EIS CM puppet client';
+# directories that FPM will use in which to create package. Space separated string
+my $fpm_directories = 'var etc opt';
+
 my $fpm = 'fpm';
 my ($os, $rev) = (`uname -s`, `uname -r`);
 chomp ($os, $rev);
@@ -317,15 +328,35 @@ if ($packit eq "yes") {
     system "cp ${top}/fpmtop/init.d/Solaris/smf/puppetd.xml ${top}/fpmtop/";
     package_solaris;
   } else {
-    # TODO: creates both rpm's and deb's indifferent to linux type. Should fix
-    # so that it creates the correct package type for the system
-    @pkgtype = ('rpm', 'deb');
-    chdir "${top}/fpmtop";
-    foreach $pkgtype (@pkgtype) {
-      system "/bin/rm -rf opt/puppet ; cp -r ${prefix} opt";
-      print "${fpm} -n eispuppet -v ${eis_puppet_version} -t ${pkgtype} -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt\n";
-      system "${fpm} -n eispuppet -v ${eis_puppet_version} -t ${pkgtype} -s dir --vendor EIS --category eis_cm --provides eis_cm --maintainer nils.olof.xo.paulsson@ericsson.com --description 'EIS CM puppet client' var etc opt";
-      system "mv eispuppet*.${pkgtype} ${top}/packages/${ostype}/";
+
+    # if not RedHat, build deb. RHEL and Suse are both RPM based and Solaris is
+    # caught above.
+    if ($ostype !~ /RedHat/i) {
+      $pkgtype = 'deb';
+    } else {
+      $pkgtype = 'rpm';
     }
+
+    chdir "${top}/fpmtop";
+    system "/bin/rm -rf opt/puppet ; cp -r ${prefix} opt";
+
+    $fpm_command = <<EOM;
+${fpm} -n ${fpm_name} \\
+  -v ${eis_puppet_version} \\
+  -t ${pkgtype} \\
+  -s dir \\
+  --url '${fpm_url}' \\
+  --vendor '${fpm_vendor}' \\
+  --category '${fpm_category}' \\
+  --provides '${fpm_provides}' \\
+  --maintainer '${fpm_maintainer}' \\
+  --description '${fpm_description}' \\
+  ${fpm_directories}
+EOM
+
+    print "\n################### Packaging for ${pkgtype} with:\n$fpm_command\n";
+    system $fpm_command;
+
+    system "mv eispuppet*.${pkgtype} ${top}/packages/${ostype}/";
   }
 }
