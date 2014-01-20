@@ -2,7 +2,7 @@
 #
 #
 
-$eis_puppet_version = '3.3.1-6' ;
+$eis_puppet_version = '3.3.2-0' ;
 
 %pathmap = (
   'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin:/usr/sfw/bin",
@@ -31,7 +31,8 @@ $openssl101e = {
   'pkgsrc'    => $build_dir . '/tgzs/openssl-1.0.1e.tar.gz',
   'srcdir'    => $src . '/openssl-1.0.1e',
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
-  'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
+# requires the compiler label for the platform and must be os/platform specific
+#  'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
   'make'      => 'make',
   'install'   => 'make install',
   'env'       => {
@@ -166,7 +167,7 @@ $rubyshadow214 = {
   'srcdir'    => "${src}/ruby-shadow",
 #  'extract'    => "cp -r ${build_dir}/tgzs/ruby-shadow ${src}/ruby-shadow",
   'extract'    => "rsync -avp ${build_dir}/tgzs/ruby-shadow/ ${src}/ruby-shadow/",
-  'configure' => "${prefix}/bin/ruby extconf.rb",
+  'configure' => "make clean; ${prefix}/bin/ruby extconf.rb",
   'make'      => 'gmake CC=\'gcc -static-libgcc\'',
   'install'   => 'gmake install',
   'env' => {
@@ -193,28 +194,28 @@ $hiera121 = {
   'install' => "test -f install.rb || cp ${top}/patches/hiera/install.rb . ; ${prefix}/bin/ruby install.rb --no-configs",
 };
 
-$puppet331 = {
-  'name'    => 'Puppet 3.3.1',
-  'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.1.tar.gz',
-  'pkgsrc'  => $build_dir . '/tgzs/puppet-3.3.1.tar.gz',
-  'srcdir'  => "${src}/puppet-3.3.1",
+$puppet332 = {
+  'name'    => 'Puppet 3.3.2',
+  'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.2.tar.gz',
+  'pkgsrc'  => $build_dir . '/tgzs/puppet-3.3.2.tar.gz',
+  'srcdir'  => "${src}/puppet-3.3.2",
   'extract' => 'gunzip -c  %PKGSRC% | tar xvf -',
   'install' => "${prefix}/bin/ruby install.rb --no-configs",
 };
 
 @packages = qw/
-  zlib128
-  openssl101e
   libiconv114
-  readline62
+  zlib128
   ncurses59
+  readline62
+  openssl101e
   ruby187p358
+  rubyshadow214
   augeas110
   ruby_augeas050
-  rubyshadow214
   hiera121
   facter173
-  puppet331
+  puppet332
 /;
 
 $target = $build_dir . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
