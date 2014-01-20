@@ -8,19 +8,14 @@ foreach (@op) {
 
 $bits = `uname -m`;
 if ($bits =~ /i686/) {
-  $syst = 'linux-elf';
+  $openssl_compiler = 'linux-elf';
 } else {
-  $syst = 'linux-x86_64';
+  $openssl_compiler = 'linux-x86_64';
 }
-
-$openssl098w = {
-    %{$openssl098w},
-    'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} ${syst} -static-libgcc",
-};
 
 $openssl101e = {
     %{$openssl101e},
-    'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} ${syst} -static-libgcc",
+    'configure' => "make clean; ./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} ${openssl_compiler} -static-libgcc",
 };
 
 $ruby187p358 = {
