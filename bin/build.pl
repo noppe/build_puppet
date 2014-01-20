@@ -258,7 +258,7 @@ GetOptions (
 );
 
 if (length($osver) == 0) {
-  logprint "argument osver must be specified, such as \'-osver el6\'\n";
+  print "argument osver must be specified, such as \'-osver el6\'\n";
   exit 1
 }
 
@@ -387,7 +387,7 @@ ${fpm} -n ${fpm_name} \\
  --directories /etc/puppet \\
  --directories /var/lib/puppet \\
  -p ${top}/packages/${ostype}/${git_revision}/ \\
- $fpm_dirs
+ $fpm_dirs /etc/init.d/puppet
 EOM
 
     print "\n################### Packaging for ${pkgtype} with:\n$fpm_command\n";
