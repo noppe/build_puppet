@@ -2,7 +2,7 @@
 #
 #
 
-$eis_puppet_version = '3.3.2-0' ;
+$eis_puppet_version = '3.3.1-7' ;
 
 %pathmap = (
   'SunOS-5.9'  =>  "/opt/sfw/gcc-3/bin:/usr/ccs/bin:/usr/local/bin:/usr/bin:/bin:/usr/sfw/bin",
@@ -194,11 +194,11 @@ $hiera121 = {
   'install' => "test -f install.rb || cp ${top}/patches/hiera/install.rb . ; ${prefix}/bin/ruby install.rb --no-configs",
 };
 
-$puppet332 = {
-  'name'    => 'Puppet 3.3.2',
-  'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.2.tar.gz',
-  'pkgsrc'  => $build_dir . '/tgzs/puppet-3.3.2.tar.gz',
-  'srcdir'  => "${src}/puppet-3.3.2",
+$puppet331 = {
+  'name'    => 'Puppet 3.3.1',
+  'fetch'   => 'wget http://downloads.puppetlabs.com/puppet/puppet-3.3.1.tar.gz',
+  'pkgsrc'  => $build_dir . '/tgzs/puppet-3.3.1.tar.gz',
+  'srcdir'  => "${src}/puppet-3.3.1",
   'extract' => 'gunzip -c  %PKGSRC% | tar xvf -',
   'install' => "${prefix}/bin/ruby install.rb --no-configs",
 };
@@ -215,7 +215,7 @@ $puppet332 = {
   ruby_augeas050
   hiera121
   facter173
-  puppet332
+  puppet331
 /;
 
 $target = $build_dir . "/packages/eisuppet-$platform-$eis_puppet_version.pkg" ;
