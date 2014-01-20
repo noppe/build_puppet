@@ -253,8 +253,14 @@ GetOptions (
   'prefix=s'    => \$prefix,
   'packages=s'  => \@pac,
   'wrapit=s'    => \$packit,
+  'osver=s'     => \$osver,
   'dump'        => \$dump
 );
+
+if (length($osver) == 0) {
+  print "argument osver must be specified, such as \'-osver el6\'\n";
+  exit 1
+}
 
 unless (-d "${build_dir}/logs") {
   mkdir "${build_dir}/logs", 0755;
@@ -362,6 +368,7 @@ if ($packit eq "yes") {
     }
 
     system "rsync -avp ${top}/fpmtop/etc/ /etc/";
+    system "rsync -avp ${top}/fpmtop/${osver}/ /";
     chdir '/';
 
     $fpm_command = <<EOM;
@@ -380,7 +387,7 @@ ${fpm} -n ${fpm_name} \\
  --directories /etc/puppet \\
  --directories /var/lib/puppet \\
  -p ${top}/packages/${ostype}/${git_revision}/ \\
- $fpm_dirs
+ $fpm_dirs /etc/init.d/puppet
 EOM
 
     print "\n################### Packaging for ${pkgtype} with:\n$fpm_command\n";
