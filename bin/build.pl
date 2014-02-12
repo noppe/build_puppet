@@ -10,7 +10,7 @@ chop ($arch = `uname -p`);
 
 # Ensure basic paths are in environment. This way we do not have to know
 # exactly where binaries are on the different types of systems.
-$ENV{'PATH'} = "${ENV}{'PATH'}:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
+$ENV{PATH} = "$ENV{PATH}:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
 
 # used in FPM
 my $fpm_name = 'eispuppet';
@@ -386,6 +386,7 @@ ${fpm} -n ${fpm_name} \\
  --directories /opt/puppet \\
  --directories /etc/puppet \\
  --directories /var/lib/puppet \\
+ --exclude /etc/puppet/ssl/* \\
  -p ${top}/packages/${ostype}/${git_revision}/ \\
  $fpm_dirs /etc/init.d/puppet
 EOM
