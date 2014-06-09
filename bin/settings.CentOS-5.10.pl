@@ -18,8 +18,8 @@ $zlib128 = {
   },
 };
 
-$openssl101e = {
-  %{$openssl101e},
+$openssl101g = {
+  %{$openssl101g},
   'configure' => "make clean ; ./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} ${syst} -static-libgcc",
   'env'       => {
     'CFLAGS' => '-fPIC',  

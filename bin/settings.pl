@@ -25,11 +25,11 @@ $zlib128 = {
   },
 };
 
-$openssl101e = {
-  'name'      => 'openssl 1.0.1e',
-  'fetch'     => 'wget http://www.openssl.org/source/openssl-1.0.1e.tar.gz',
-  'pkgsrc'    => $build_dir . '/tgzs/openssl-1.0.1e.tar.gz',
-  'srcdir'    => $src . '/openssl-1.0.1e',
+$openssl101g = {
+  'name'      => 'openssl 1.0.1g',
+  'fetch'     => 'wget http://www.openssl.org/source/openssl-1.0.1g.tar.gz',
+  'pkgsrc'    => $build_dir . '/tgzs/openssl-1.0.1g.tar.gz',
+  'srcdir'    => $src . '/openssl-1.0.1g',
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
 # requires the compiler label for the platform and must be os/platform specific
 #  'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
@@ -208,7 +208,7 @@ $puppet331 = {
   zlib128
   ncurses59
   readline62
-  openssl101e
+  openssl101g
   ruby187p358
   rubyshadow214
   augeas110

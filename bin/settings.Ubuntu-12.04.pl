@@ -13,8 +13,8 @@ if ($bits =~ /i686/) {
   $openssl_compiler = 'linux-x86_64';
 }
 
-$openssl101e = {
-    %{$openssl101e},
+$openssl101g = {
+    %{$openssl101g},
     'configure' => "make clean; ./Configure  -L${prefix}/lib -I${prefix}/include shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} ${openssl_compiler} -static-libgcc",
 };
 
