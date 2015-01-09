@@ -208,7 +208,7 @@ $puppet331 = {
   zlib128
   ncurses59
   readline62
-  openssl101g
+  openssl101k
   ruby187p358
   rubyshadow214
   augeas110
