@@ -26,10 +26,10 @@ $zlib128 = {
 };
 
 $openssl101g = {
-  'name'      => 'openssl 1.0.1g',
-  'fetch'     => 'wget http://www.openssl.org/source/openssl-1.0.1g.tar.gz',
-  'pkgsrc'    => $build_dir . '/tgzs/openssl-1.0.1g.tar.gz',
-  'srcdir'    => $src . '/openssl-1.0.1g',
+  'name'      => 'openssl 1.0.1k',
+  'fetch'     => 'wget http://www.openssl.org/source/openssl-1.0.1k.tar.gz',
+  'pkgsrc'    => $build_dir . '/tgzs/openssl-1.0.1k.tar.gz',
+  'srcdir'    => $src . '/openssl-1.0.1k',
   'extract'    => 'gunzip -c  %PKGSRC% | tar xvf -',
 # requires the compiler label for the platform and must be os/platform specific
 #  'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
