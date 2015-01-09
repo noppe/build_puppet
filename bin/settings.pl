@@ -25,7 +25,7 @@ $zlib128 = {
   },
 };
 
-$openssl101g = {
+$openssl101k = {
   'name'      => 'openssl 1.0.1k',
   'fetch'     => 'wget http://www.openssl.org/source/openssl-1.0.1k.tar.gz',
   'pkgsrc'    => $build_dir . '/tgzs/openssl-1.0.1k.tar.gz',
