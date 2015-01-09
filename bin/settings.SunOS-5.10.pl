@@ -4,8 +4,8 @@
 
 
 if ($platform_arch eq 'sparc') {
-  $openssl101g = {
-    %{$openssl101g},
+  $openssl101k = {
+    %{$openssl101k},
     'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-sparcv9-gcc -static-libgcc",
   };
   $augeas110 = {
@@ -27,8 +27,8 @@ if ($platform_arch eq 'sparc') {
     },
   }
 } else {
-  $openssl101g = {
-    %{$openssl101g},
+  $openssl101k = {
+    %{$openssl101k},
     'configure' => "./Configure  -L${prefix}/lib -I${prefix}/include -R${prefix}/lib shared zlib-dynamic --prefix=${prefix} --openssldir=${prefix} solaris-x86-gcc -static-libgcc",
   };
   $augeas110 = {
