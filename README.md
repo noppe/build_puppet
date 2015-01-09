@@ -80,39 +80,39 @@ This would build only zlib and openssl. Notice the names match the variables fro
 
 # repo layout
 
-## bin/
+## `bin/`
 scripts
 
-### build.pl
+### `build.pl`
 main script that you run
 
-### settings.pl
+### `settings.pl`
 Default settings
 
-### settings.<platform>.pl
+### `settings.<platform>.pl`
 Settings specific to that platform
 
-## builds/
+## `builds/`
 Directory where builds take place. Ignored by git
 
-### builds/logs/
+### `builds/logs/`
 Logs to both of these files.
 
     logs/build.$hostname-<pid>
     logs/latest
 
-### builds/src.<hostname>/
+### `builds/src.<hostname>/`
 Packages are extracted and built here, under `<package_name>/`
 
-### builds/tgzs/
+### `builds/tgzs/`
 Packages are downloaded here.
 
-## fpmtop/
+## `fpmtop/`
 
-## packages/
+## `packages/`
 Where built packages end up.
 
-## patches/
+## `patches/`
 Patches to source code
 
 
